@@ -1,9 +1,13 @@
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
+import 'package:job_dekho_app/Helper/session.dart';
 
 import '../Utils/color.dart';
 import 'HomeScreen.dart';
 import 'RegisterParcel.dart';
 import 'MyProfile.dart';
+import 'order_screen.dart';
 
 // void main() => runApp(const MyApp());
 
@@ -29,59 +33,87 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _selectedIndex = 0;
+  //int _selectedIndex = 0;
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    RegistParcelScreen(),
-    DrawerScreen(),
-    // Text(
-    //   'Index 0: Home',
-    //   style: optionStyle,
-    // ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+
+  int currentIndex = 1 ;
+  int bottomIndex = 0;
+
+  List pageList  = [
+    HomeScreen(),
+    OrderHistrry(),
+    //RegistParcelScreen(),
+    DrawerScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
+    return
+      WillPopScope(
+        onWillPop: () async {
+          // Display a confirmation dialog when the back button is pressed.
+          bool exit = await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Exit App'),
+                content: Text('Are you sure you want to exit the app?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false); // Cancel exit
+                    },
+                    child: Text('No'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true); // Confirm exit
+                    },
+                    child: Text('Yes'),
+                  ),
+                ],
+              );
+            },
+          );
 
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Book Now',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: primaryColor,
-        onTap: _onItemTapped,
-      ),
-    );
+          return exit ?? false; // Exit if the user confirmed (true) or continue if canceled (false).
+        },
+        child: Scaffold(
+            bottomNavigationBar: CurvedNavigationBar(
+              //buttonBackgroundColor: Colors.white,
+              color: primaryColor,
+              backgroundColor: whiteColor,
+              items: [
+                CurvedNavigationBarItem(
+                    child: Icon(Icons.dashboard,color: Colors.white,),
+                    label:getTranslated(context, "HOME"),
+                    labelStyle: TextStyle(color: Colors.white)
+                ),
+                CurvedNavigationBarItem(
+                    child: Icon(Icons.task_alt,color: Colors.white,),
+                    label: getTranslated(context, "orders"),
+                    labelStyle: TextStyle(color: Colors.white)
+                ),
+                CurvedNavigationBarItem(
+                    child: Icon(Icons.task_alt,color: Colors.white,),
+                    label: getTranslated(context, "My Account"),
+                    labelStyle: TextStyle(color: Colors.white)
+                ),
+              ],
+              onTap: (index) {
+                setState(() {
+                  bottomIndex = index;
+                });
+
+                //Handle button tap
+              },
+            ),
+            key: _key,
+        body: pageList[bottomIndex]
+    ),
+      );
   }
 }

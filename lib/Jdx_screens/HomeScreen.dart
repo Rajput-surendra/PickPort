@@ -8,6 +8,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:job_dekho_app/Helper/session.dart';
 import 'package:job_dekho_app/Jdx_screens/Mywallet.dart';
 import 'package:job_dekho_app/Jdx_screens/parcel_history.dart';
 import 'package:job_dekho_app/Jdx_screens/parceldetailsscreen.dart';
@@ -21,6 +22,7 @@ import '../Model/bannerModel.dart';
 import '../Model/myPlanModel.dart';
 import '../Utils/api_path.dart';
 import '../Utils/color.dart';
+import 'RegisterParcel.dart';
 import 'notification_Screen.dart';
 import 'signup_Screen.dart';
 
@@ -182,232 +184,169 @@ class _HomeScreenState extends State<HomeScreen> {
       child: WillPopScope(
         onWillPop: showExitPopup,
         child: Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 3),
-                    //height: MediaQuery.of(context).size.height / 1.1,
-                    decoration: const BoxDecoration(
-                        color: Color(0xffF9F9F9),
-                        borderRadius:
-                            BorderRadius.only(topRight: Radius.circular(0))),
-                    child: ListView(
-                      shrinkWrap: true,
-                      physics: const ScrollPhysics(),
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              decoration:  BoxDecoration(
-                                  color: splashcolor,
-                                  borderRadius:
-                                  const BorderRadius.only(topLeft: Radius.circular(10),bottomLeft:Radius.circular(10) )),
-
-                              width: MediaQuery.of(context).size.width / 1.26,
-                              height: 50,
-                              child: TextField(
-                                readOnly: true,
-                                controller: addressC,
-                                maxLines: 1,
-                                onTap: () {
-                                  //_getLocation();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PlacePicker(
-                                        apiKey: Platform.isAndroid
-                                            ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
-                                            : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
-                                        onPlacePicked: (result) {
-                                          print(result.formattedAddress);
-                                          setState(() {
-                                            addressC.text =
-                                                result.formattedAddress.toString();
-                                            lat = result.geometry!.location.lat;
-                                            long = result.geometry!.location.lng;
-                                          });
-                                          Navigator.of(context).pop();
-                                        },
-                                        initialPosition: LatLng(
-                                            22.719568,75.857727),
-                                        useCurrentLocation: true,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                textInputAction: TextInputAction.next,
-                                decoration: InputDecoration(
-                                  border: const OutlineInputBorder(
-                                      borderSide: BorderSide.none),
-                                  hintText: "Current Location",
-                                  hintStyle:
-                                      TextStyle(fontWeight: FontWeight.bold),
-                                  prefixIcon: Image.asset(
-                                    'assets/ProfileAssets/locationIcon.png',
-                                    scale: 1.6,
-                                    color: primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.only(right: 10),
-                                height: 50,
-
-                                decoration:  BoxDecoration(
-                                    color: splashcolor,
-                                    borderRadius:
-                                    const BorderRadius.only(topRight: Radius.circular(0),bottomRight:Radius.circular(0) )),
-                                child: InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                              const NotificationScreen()));
-                                    },
-                                    child: const Icon(
-                                      Icons.notification_add_outlined,
-                                      color: Colors.black,
-                                    )),
-                              ),
-                            ),
-
-                            Expanded(
-                              flex: 1,
-                              child: InkWell(
-                                  onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyWallet()));
-                                  },
-                                child: Container(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    height: 50,
-
-                                    decoration:  BoxDecoration(
-                                        color: splashcolor,
-                                        borderRadius:
-                                        const BorderRadius.only(topRight: Radius.circular(10),bottomRight:Radius.circular(10) )),
-                                    child: Icon(Icons.account_balance_wallet, color: primaryColor,)),
-                              ),
-                            )
-
-
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-
-                        /*Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: splashcolor,
-                            ),
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: 50,
+          backgroundColor: primaryColor,
+          body: Column(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 10,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 20,),
+                          SizedBox(
+                            height: 20,
                             child: TextField(
+
+                              readOnly: true,
+                              maxLines: 1,
+                              onTap: () {
+                                //_getLocation();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PlacePicker(
+                                      apiKey: Platform.isAndroid
+                                          ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
+                                          : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
+                                      onPlacePicked: (result) {
+                                        print(result.formattedAddress);
+                                        setState(() {
+                                          addressC.text =
+                                              result.formattedAddress.toString();
+                                          lat = result.geometry!.location.lat;
+                                          long = result.geometry!.location.lng;
+                                        });
+                                        Navigator.of(context).pop();
+                                      },
+                                      initialPosition: LatLng(
+                                          22.719568,75.857727),
+                                      useCurrentLocation: true,
+                                    ),
+                                  ),
+                                );
+                              },
+                              textInputAction: TextInputAction.next,
                               decoration: InputDecoration(
+                                contentPadding: EdgeInsets.zero,
                                 border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                hintText: "Search ",
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: primaryColor,
+                                    borderSide: BorderSide.none),
+                                hintText: getTranslated(context, "Current Location"),
+                                hintStyle:
+                                TextStyle(fontWeight: FontWeight.bold,color: whiteColor),
+                                prefixIcon: Image.asset(
+                                  'assets/ProfileAssets/locationIcon.png',scale: 1.3,
+                                  color: Secondry,
                                 ),
                               ),
                             ),
                           ),
-                        ),*/
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        // bannerModel == null ? Center(child: CircularProgressIndicator(),) : bannerModel!.data!.length == 0 ?
-                        // Center(child: Text("No slider to show",style: TextStyle(fontFamily: 'Lora'),),),
-                        //  :  Container(
-                        //   height: 180,
-                        //   width: double.infinity,
-                        //   // width: double.infinity,
-                        //   child:  CarouselSlider(
-                        //     options: CarouselOptions(
-                        //       viewportFraction: 1.2,
-                        //       initialPage: 0,
-                        //       enableInfiniteScroll: true,
-                        //       reverse: false,
-                        //       autoPlay: true,
-                        //       autoPlayInterval: Duration(seconds: 3),
-                        //       autoPlayAnimationDuration:
-                        //       Duration(milliseconds: 120),
-                        //       enlargeCenterPage: false,
-                        //       scrollDirection: Axis.horizontal,
-                        //       height: 180,
-                        //       onPageChanged: (position, reason) {
-                        //         setState(() {
-                        //           currentindex = position;
-                        //         });
-                        //         print(reason);
-                        //         print(CarouselPageChangedReason.controller);
-                        //       },
-                        //     ),
-                        //     items: bannerModel!.data!.map((val) {
-                        //       print("ooooooo ${ApiPath.imgUrl}${val.image}");
-                        //       return Container(
-                        //         width: MediaQuery.of(context).size.width,
-                        //         decoration: BoxDecoration(
-                        //             borderRadius: BorderRadius.circular(20)
-                        //         ),
-                        //         // height: 180,
-                        //         // width: MediaQuery.of(context).size.width,
-                        //         child: ClipRRect(
-                        //             borderRadius: BorderRadius.circular(20),
-                        //             child: Image.network(
-                        //               "${ApiPath.imgUrl}${val.image}",
-                        //               fit: BoxFit.fill,
-                        //             )),
-                        //       );
-                        //     }).toList(),
-                        //   ),
-                        //
-                        //   // ListView.builder(
-                        //   //   scrollDirection: Axis.horizontal,
-                        //   //   shrinkWrap: true,
-                        //   //   //physics: NeverScrollableScrollPhysics(),
-                        //   //   itemCount: homeSliderList!.banneritem!.length,
-                        //   //   itemBuilder: (context, index) {
-                        //   //     return
-                        //   //
-                        //   //     //   InkWell(
-                        //   //     //   onTap: () {
-                        //   //     //     // Get.to(ProductListScreen(
-                        //   //     //     //     parentScaffoldKey: widget.parentScaffoldKey));
-                        //   //     //     widget.callback!.call(11);
-                        //   //     //   },
-                        //   //     //   child: Image.network("${Urls.imageUrl}${sliderBanner!.banneritem![0].bimg}"),
-                        //   //     //   // Container(
-                        //   //     //   //   margin: getFirstNLastMergin(index, 5),
-                        //   //     //   //   width: MediaQuery.of(context).size.width * 0.8,
-                        //   //     //   //   decoration: BoxDecoration(
-                        //   //     //   //       color: (index + 1) % 2 == 0
-                        //   //     //   //           ? AppThemes.lightRedColor
-                        //   //     //   //           : AppThemes.lightYellowColor,
-                        //   //     //   //       borderRadius:
-                        //   //     //   //           BorderRadius.all(Radius.circular(10))
-                        //   //     //   //   ),
-                        //   //     //   // ),
-                        //   //     // );
-                        //   //   },
-                        //   // ),
-                        // ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Container(
+                                width: 250,
+                                child: Text("${addressC.text}",overflow: TextOverflow.ellipsis,maxLines: 1,style: TextStyle(color: whiteColor),)),
+                          )
+
+
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 40,
+                              width: 40,
+                              decoration:  BoxDecoration(
+                                  color: splashcolor,
+                                  borderRadius:
+                                  BorderRadius.circular(100)),
+                              child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                            const NotificationScreen()));
+                                  },
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/ProfileAssets/notification.png',scale: 1.3,
+
+                                    ),
+                                  )),
+                            ),
+                            SizedBox(width: 5,),
+                            Container(
+                              height: 40,
+                              width: 40,
+                              decoration:  BoxDecoration(
+                                  color: splashcolor,
+                                  borderRadius:
+                                  BorderRadius.circular(100)),
+                              child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                            const NotificationScreen()));
+                                  },
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/ProfileAssets/support.png',scale: 1.3,
+                                    ),
+                                  )),
+                            ),
+                          ],
+                        )
+                    ),
+
+                    // Expanded(
+                    //   flex: 1,
+                    //   child: InkWell(
+                    //     onTap: (){
+                    //       Navigator.push(context, MaterialPageRoute(builder: (context) => MyWallet()));
+                    //     },
+                    //     child: Container(
+                    //         padding: const EdgeInsets.only(right: 10),
+                    //         height: 50,
+                    //
+                    //         decoration:  BoxDecoration(
+                    //             color: splashcolor,
+                    //             borderRadius:
+                    //             const BorderRadius.only(topRight: Radius.circular(10),bottomRight:Radius.circular(10) )),
+                    //         child: Icon(Icons.account_balance_wallet, color: primaryColor,)),
+                    //   ),
+                    // )
+
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 9,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: backGround,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                  ),
+                  child:
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const ScrollPhysics(),
+                      children: [
                         SizedBox(
                           height: 150,
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery.of(context).size.width/1.2,
                           child:bannerModel== null ?  Center(child: CircularProgressIndicator(color: splashcolor,)) :  ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Image.network(
@@ -418,323 +357,131 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-
+                          Text(getTranslated(context, "Bookings")),
+                        SizedBox(height: 8,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              'Parcel History',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            /*InkWell(
-                                onTap: () {
-                                  Get.to(const ParcelHistory());
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: (){
+                                  _dialogBuilder(context);
                                 },
-                                child: Text(
-                                  'View All',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: primaryColor),
-                                )),*/
+                                child: Card(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 5,),
+                                      Container(
+                                       height: 80,width: 100,
+                                        child: Image.asset(
+                                          'assets/ProfileAssets/2 wheeler.png',height: 40,width: 40,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5,),
+                                      Text(getTranslated(context, "2 Wheeler")),
+                                      SizedBox(height: 10,),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5,),
+                                    Container(
+                                      height: 80,width: 100,
+                                      child: Image.asset(
+                                        'assets/ProfileAssets/3 wheeler.png',height: 50,width: 50,
+                                      ),
+                                    ),
+                                    SizedBox(height: 5,),
+                                    Text(getTranslated(context, "3 Wheeler")),
+                                    SizedBox(height: 10,),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5,),
+                                    Container(
+                                      height: 80,width: 100,
+                                      child: Image.asset(
+                                        'assets/ProfileAssets/tata ace.png',height: 50,width: 50,
+                                      ),
+                                    ),
+                                    SizedBox(height: 5,),
+                                    Text(getTranslated(context, "Tata Ace")),
+                                    SizedBox(height: 10,),
+                                  ],
+                                ),
+                              ),
+                            )
                           ],
                         ),
-                        _segmentButton(),
-                        SizedBox(
-
-                          child: isLoading
-                              ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : parcelhistory?.data?.isEmpty ??false
-                                  ? const Center(
-                                      child: Text(
-                                        "Not any order",
-                                        style: TextStyle(fontFamily: 'Lora'),
+                        SizedBox(height: 8,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5,),
+                                    Container(
+                                      height: 90,width: 100,
+                                      child: Image.asset(
+                                        'assets/ProfileAssets/mahindra pickup.png',height: 50,width: 50,
                                       ),
-                                    )
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      scrollDirection: Axis.vertical,
-                                      itemCount:int.parse((parcelhistory!.data!.length).toStringAsFixed(0))
-                                          ,
-                                      itemBuilder: (c, i) {
-                                        return parcelhistory?.data?[i].parcelDetails?.isEmpty ?? true ? SizedBox():  Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 0),
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ParceldetailsScreen(
-                                                            orderid: parcelhistory!
-                                                                .data![i].orderId,isFromParcelHistory: true,
-                                                          )));
-                                            },
-                                            child: Card(
-                                              elevation: 1,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 10),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
-                                                  children: [
-                                                     CircleAvatar(
+                                    ),
+                                    SizedBox(height: 5,),
+                                    Text(getTranslated(context, "Mahindra Pickup")),
+                                    SizedBox(height: 10,),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5,),
+                                    Container(
+                                      height: 90,width: 100,
+                                      child: Image.asset(
+                                        'assets/ProfileAssets/total 407.png',height: 50,width: 50,
+                                      ),
+                                    ),
+                                    SizedBox(height: 5,),
+                                    Text(getTranslated(context, "Tato 407")),
+                                    SizedBox(height: 10,),
+                                  ],
+                                ),
+                              ),
+                            ),
 
-                                                       backgroundColor: whiteColor,
+                          ],
+                        ),
+                        SizedBox(height: 8,),
+                        Container(
+                          width: double.infinity,
+                          child: Image.asset(
+                            'assets/ProfileAssets/home1111111.png',
+                          ),
+                        ),
+                        SizedBox(height: 40,),
 
-
-                                                      radius: 40,
-                                                      child: Image.asset('assets/order.png',),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          "Order ID",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        Text(
-                                                          "${parcelhistory!.data![i].orderId}",
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 16,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-
-                                                        // Text("202",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
-                                                        const Text(
-                                                          "Total Amount",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        Text(
-                                                          "${parcelhistory!.data![i].orderAmount}",
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 16,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        const Text(
-                                                          "Order Status",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w500,
-                                                              fontFamily:
-                                                              'Lora'),
-                                                        ),
-                                                        SizedBox(height: 5,),
-                                                       /* InkWell(
-                                                          onTap: (){
-                                                           *//* String lat =
-                                                                parcelhistory!.data![i].senderLatitude.toString() ?? '';//'22.7177'; //
-                                                            String lon =
-                                                                parcelhistory!.data![i].senderLongitude.toString() ?? '';//'75.8545'; //
-                                                            String CURENT_LAT =
-                                                                parcelhistory!.data![i].receiverLatitude.toString() ?? '';
-                                                            String CURENT_LONG =
-                                                                item.receiverLongitude.toString() ?? '';*//*
-
-                                                           *//* final Uri url = Uri.parse(
-                                                                'https://www.google.com/maps/dir/?api=1&origin=' +
-                                                                    CURENT_LAT +
-                                                                    ',' +
-                                                                    CURENT_LONG +
-                                                                    ' &destination=' +
-                                                                    lat.toString() +
-                                                                    ',' +
-                                                                    lon.toString() +
-                                                                    '&travelmode=driving&dir_action=navigate');
-
-                                                            _launchURL(url);*//*
-
-                                                          },
-                                                          child: Container(
-                                                            padding:
-                                                            const EdgeInsets.only(
-                                                                left: 10,
-                                                                right: 10,
-                                                                top: 2,
-                                                                bottom: 2),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                BorderRadius
-                                                                    .circular(15),
-                                                                color: primaryColor),
-                                                            child: const Text(
-                                                              'Track',
-                                                              style: TextStyle(
-                                                                  color: Colors.white),
-                                                            ),
-                                                          ),
-                                                        )*/
-
-                                                      ],
-                                                    ),
-                                                    Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          "Parcel Count",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        Text(
-                                                          "${parcelhistory!.data![i].parcelDetails?.length}",
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 16,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        const Text(
-                                                          "Order Date",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        Text(
-                                                          "${parcelhistory!.data![i].onDate.toString().substring(0, 10)}",
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 16,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                         Text(
-                                                          orderStatus(parcelhistory!.data![i].orderStatus ?? 'cancel'),
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w500,
-                                                              fontFamily:
-                                                              'Lora'),
-                                                        ),
-                                                        const SizedBox(height: 5,),
-                                               parcelhistory!.data![i].orderStatus == '7' ? InkWell(
-                                                          onTap: (){
-                                                            cancelOrder(parcelhistory!.data![i].orderId ?? '44', i);
-                                                          },
-                                                          child: Container(
-                                                            padding:
-                                                            const EdgeInsets.only(
-                                                                left: 10,
-                                                                right: 10,
-                                                                top: 2,
-                                                                bottom: 2),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                BorderRadius
-                                                                    .circular(15),
-                                                                color: primaryColor),
-                                                            child: const Text(
-                                                              'Cancel',
-                                                              style: TextStyle(
-                                                                  color: Colors.white),
-                                                            ),
-                                                          ),
-                                                        ) : SizedBox.shrink()
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                        )
                       ],
-                    )),
-              ],
-            ),
+                    ),
+                  ),
+                ),
+              )
+
+            ],
           ),
         ),
       ),
@@ -920,4 +667,77 @@ String orderStatus(String status ){
     print(response.reasonPhrase);
     }
   }
+
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          insetPadding: EdgeInsets.zero,
+          contentPadding: EdgeInsets.zero,
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          title:  Text(""),
+          content:  Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              height: 150,
+              width: double.infinity  ,
+              child:  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistParcelScreen()));
+                      },
+                      child: Card(
+                        elevation: 2,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 5,),
+                            Container(
+                              height: 90,width: 80,
+                              child: Image.asset(
+                                'assets/ProfileAssets/Gear Vehicle.png',height: 50,width: 50,
+                              ),
+                            ),
+                            SizedBox(height: 5,),
+                            Text(getTranslated(context, "Gear Vehicle")),
+                            SizedBox(height: 10,),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Card(
+                      elevation: 2,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 5,),
+                          Container(
+                            height: 90,width: 80,
+                            child: Image.asset(
+                              'assets/ProfileAssets/non gear.png',height: 50,width: 50,
+                            ),
+                          ),
+                          SizedBox(height: 5,),
+                          Text(getTranslated(context, "Non Gear Vehicle")),
+                          SizedBox(height: 10,),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+          ),
+
+        );
+      },
+    );
+  }
+
+
 }

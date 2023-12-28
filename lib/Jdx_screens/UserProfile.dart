@@ -106,11 +106,11 @@ class _UserProfileState extends State<UserProfile> {
     // TODO: implement initState
     super.initState();
     emailController = TextEditingController(
-        text: widget.getprofile?.data![0].userEmail.toString());
+        text: widget.getprofile?.data?[0].userEmail.toString());
     nameController = TextEditingController(
-        text: widget.getprofile?.data![0].userFullname.toString());
+        text: widget.getprofile?.data?[0].userFullname.toString());
     mobileController = TextEditingController(
-        text: widget.getprofile!.data![0].userPhone.toString());
+        text: widget.getprofile?.data?[0].userPhone.toString());
 
   }
 

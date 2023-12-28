@@ -1390,6 +1390,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -1399,8 +1400,11 @@ import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:job_dekho_app/Helper/session.dart';
+import 'package:job_dekho_app/Jdx_screens/signin_Screen.dart';
 
+import '../Model/animal_cat_model_response.dart';
 import '../Utils/Color.dart';
+import 'Dashbord.dart';
 
 
 class SignUpScreen extends StatefulWidget {
@@ -1418,6 +1422,8 @@ class _SignUpScreen extends State<SignUpScreen> {
   TextEditingController mobController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  TextEditingController cPassController = TextEditingController();
+  TextEditingController referalController = TextEditingController();
   TextEditingController VhicleController = TextEditingController();
   TextEditingController VhicletypeController = TextEditingController();
   TextEditingController LicenceController = TextEditingController();
@@ -1590,9 +1596,15 @@ class _SignUpScreen extends State<SignUpScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getCityApi();
     //inIt();
   }
-
+  bool isVisible = false;
+  bool isTerm = false;
+  int  selected =  0;
+  int _value = 1;
+  bool isNonAvailable = false;
+  bool isAvailable = false;
   inIt() async {
     //location = await getUserCurrentPosition();
   }
@@ -1616,7 +1628,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                 child: Column(
                   children: [
                     const SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1656,15 +1668,16 @@ class _SignUpScreen extends State<SignUpScreen> {
             Expanded(
               flex: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                padding:  EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: backGround,
-                  borderRadius: const BorderRadius.only(
+                  borderRadius:  BorderRadius.only(
                       topRight: Radius.circular(50)),
                 ),
                 child: SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Card(
                         elevation: 1,
@@ -1679,17 +1692,17 @@ class _SignUpScreen extends State<SignUpScreen> {
                           child: TextFormField(
                             controller: nameController,
                             keyboardType: TextInputType.name,
-                            decoration: const InputDecoration(
+                            decoration:  InputDecoration(
                               prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
+                                padding: const EdgeInsets.only(top: 15),
                                 child: Icon(
                                   Icons.person,
                                   color: CustomColors.accentColor,
                                 ),
                               ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
+                              contentPadding: EdgeInsets.only(top: 20, left: 5),
                               border: InputBorder.none,
-                              hintText: "Name",
+                              hintText: getTranslated(context, "name"),
                             ),
                             validator: (v) {
                               if (v!.isEmpty) {
@@ -1716,18 +1729,18 @@ class _SignUpScreen extends State<SignUpScreen> {
                             maxLength: 10,
                             controller: mobController,
                             keyboardType: TextInputType.phone,
-                            decoration: const InputDecoration(
+                            decoration:  InputDecoration(
                               counterText: "",
                               prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.only(top: 15),
                                 child: Icon(
                                   Icons.call,
                                   color: CustomColors.accentColor,
                                 ),
                               ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
+                              contentPadding: EdgeInsets.only(top: 18, left: 5),
                               border: InputBorder.none,
-                              hintText: "Mobile Number",
+                              hintText: getTranslated(context, "ENTER_MOBILE"),
                             ),
                             validator: (v) {
                               if (v!.isEmpty) {
@@ -1756,17 +1769,17 @@ class _SignUpScreen extends State<SignUpScreen> {
                           child: TextFormField(
                             controller: emailController,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
+                            decoration:  InputDecoration(
                               prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.only(top: 15),
                                 child: Icon(
                                   Icons.email,
                                   color: CustomColors.accentColor,
                                 ),
                               ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
+                              contentPadding: EdgeInsets.only(top: 18, left: 5),
                               border: InputBorder.none,
-                              hintText: "Email Id",
+                              hintText: getTranslated(context, "Entre_Email"),
                             ),
                             validator: (v) {
                               if (v!.isEmpty) {
@@ -1779,101 +1792,251 @@ class _SignUpScreen extends State<SignUpScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 8,
-                      ),
+                      const SizedBox(height: 8,),
                       Card(
-                        elevation: 1,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
+                          //set border radius more than 50% of height and width to make circle
                         ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: VhicleController,
-                            keyboardType: TextInputType.name,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.card_giftcard_outlined,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "Vehicle number",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "Vehicle Number is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
                         elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
                         child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            maxLength: 10,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PlacePicker(
-                                    apiKey: Platform.isAndroid
-                                        ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
-                                        : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
-                                    onPlacePicked: (result) {
-                                      print(result.formattedAddress);
-                                      setState(() {
-                                        addressController.text =
-                                            result.formattedAddress.toString();
-                                        lat = result.geometry!.location.lat;
-                                        long = result.geometry!.location.lng;
-                                      });
-                                      Navigator.of(context).pop();
-                                    },
-                                    initialPosition: const LatLng(22.719568, 75.857727),
-                                    useCurrentLocation: true,
+                            height: 60,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: CustomColors.TransparentColor),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    flex: 1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 13),
+                                      child: Icon(Icons.location_city,color: CustomColors.accentColor,),
+                                    )),
+                                Expanded(
+                                  flex: 10,
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton2<AnimalCatList>(
+                                      isExpanded: true,
+                                      hint:  Text(getTranslated(context, "selectState"),
+                                        style: const TextStyle(
+                                          color: Colors.black54,fontWeight: FontWeight.w500,
+                                        ),),
+                                      value: animalCat,
+
+                                      // icon:  Icon(Icons.keyboard_arrow_down_rounded,  color:Secondry,size: 25,),
+                                      style:   TextStyle(color: Secondry,fontWeight: FontWeight.bold),
+                                      underline: Padding(
+                                        padding: const EdgeInsets.only(left: 0,top: 4),
+                                        child: Container(
+
+                                          // height: 2,
+                                          color:whiteColor,
+                                        ),
+                                      ),
+                                      onChanged: (AnimalCatList? value) {
+                                        setState(() {
+                                          animalCat = value!;
+                                          catId =  animalCat?.id;
+                                          //animalCountApi(animalCat!.id);
+                                        });
+                                      },
+                                      items: animalCatResponse?.data?.map((items) {
+                                        return DropdownMenuItem(
+                                          value: items,
+                                          child:  Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 2),
+                                                child: Container(
+
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(top: 0),
+                                                      child: Text(items.name.toString(),overflow:TextOverflow.ellipsis,style: const TextStyle(color:Colors.black),),
+                                                    )),
+                                              ),
+
+                                            ],
+                                          ),
+                                        );
+                                      })
+                                          .toList(),
+                                    ),
+
                                   ),
                                 ),
-                              );
-                            },
-                            controller: addressController,
-                            keyboardType: TextInputType.phone,
-                            decoration: const InputDecoration(
-                              counterText: "",
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.location_city,
-                                  color: CustomColors.accentColor,
+                              ],
+                            )
+                        ),
+                      ),
+                      const SizedBox(height: 8,),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          //set border radius more than 50% of height and width to make circle
+                        ),
+                        elevation: 1,
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: CustomColors.TransparentColor),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 13),
+                                    child: Icon(Icons.location_city,color: CustomColors.accentColor,),
+                                  )),
+                              Expanded(
+                                flex: 10,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton2<AnimalCatList>(
+                                    isExpanded: true,
+                                    hint:  Text(getTranslated(context, "selectCity"),
+                                      style: const TextStyle(
+                                        color: Colors.black54,fontWeight: FontWeight.w500,
+                                      ),),
+                                    value: animalCat,
+
+                                    // icon:  Icon(Icons.keyboard_arrow_down_rounded,  color:Secondry,size: 25,),
+                                    style:   TextStyle(color: Secondry,fontWeight: FontWeight.bold),
+                                    underline: Padding(
+                                      padding: const EdgeInsets.only(left: 0,top: 4),
+                                      child: Container(
+
+                                        // height: 2,
+                                        color:whiteColor,
+                                      ),
+                                    ),
+                                    onChanged: (AnimalCatList? value) {
+                                      setState(() {
+                                        animalCat = value!;
+                                        catId =  animalCat?.id;
+                                        //animalCountApi(animalCat!.id);
+                                      });
+                                    },
+                                    items: animalCatResponse?.data?.map((items) {
+                                      return DropdownMenuItem(
+                                        value: items,
+                                        child:  Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 2),
+                                              child: Container(
+
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(top: 0),
+                                                    child: Text(items.name.toString(),overflow:TextOverflow.ellipsis,style: const TextStyle(color:Colors.black),),
+                                                  )),
+                                            ),
+
+                                          ],
+                                        ),
+                                      );
+                                    })
+                                        .toList(),
+                                  ),
+
                                 ),
                               ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "Profile Photo",
+                            ],
+                          )
+                        ),
+                      ),
+                      const SizedBox(height: 8,),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          //set border radius more than 50% of height and width to make circle
+                        ),
+                        elevation: 1,
+                        child: Container(
+                          width: MediaQuery.of(context)
+                              .size
+                              .width /
+                              1.1,
+                          height: 60,
+                          child: TextField(
+                            obscureText: isVisible ? false : true,
+                            controller: passController,
+                            decoration: InputDecoration(
+                              contentPadding:
+                              EdgeInsets.only(top: 8),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              hintText: getTranslated(
+                                  context, "Entre_Pass"),
+                              prefixIcon: Image.asset(
+                                'assets/AuthAssets/Icon ionic-ios-lock.png',
+                                scale: 1.3,
+                                color: Secondry,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isVisible ? isVisible = false : isVisible = true;
+                                  });
+                                },
+                                icon: Icon(
+                                  isVisible
+                                      ? Icons.remove_red_eye
+                                      : Icons.visibility_off,
+                                  color: Colors.green,
+                                ),
+                              ),
                             ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "Profile Photo is required";
-                              }
-                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          //set border radius more than 50% of height and width to make circle
+                        ),
+                        elevation: 1,
+                        child: Container(
+                          width: MediaQuery.of(context)
+                              .size
+                              .width /
+                              1.1,
+                          height: 60,
+                          child: TextField(
+                            obscureText: isVisible ? false : true,
+                            controller: cPassController,
+                            decoration: InputDecoration(
+                              contentPadding:
+                              EdgeInsets.only(top: 8),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              hintText: getTranslated(
+                                  context, "confirmPassword"),
+                              prefixIcon: Image.asset(
+                                'assets/AuthAssets/Icon ionic-ios-lock.png',
+                                scale: 1.3,
+                                color: Secondry,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isVisible ? isVisible = false : isVisible = true;
+                                  });
+                                },
+                                icon: Icon(
+                                  isVisible
+                                      ? Icons.remove_red_eye
+                                      : Icons.visibility_off,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -1891,343 +2054,19 @@ class _SignUpScreen extends State<SignUpScreen> {
                               borderRadius: BorderRadius.circular(10),
                               color: CustomColors.TransparentColor),
                           child: TextFormField(
-                            controller: passController,
+                            controller: referalController,
                             obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
+                            decoration:  InputDecoration(
+                              prefixIcon: const Padding(
                                 padding: EdgeInsets.only(top: 10),
                                 child: Icon(
-                                  Icons.lock,
+                                  Icons.refresh_sharp,
                                   color: CustomColors.accentColor,
                                 ),
                               ),
                               contentPadding: EdgeInsets.only(top: 22, left: 5),
                               border: InputBorder.none,
-                              hintText: "Pan Card",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "Pan Card is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: passController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.lock,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "Driving License",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "Driving License is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: passController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.lock,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "Aadhar Card ",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "Aadhar Card is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: passController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.lock,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "RC",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "RC is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: passController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.lock,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "Address",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "Address is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: passController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.lock,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "State",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "State is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: passController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.lock,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "City",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "City is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: passController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.lock,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "Password",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "Password is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: passController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.lock,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "Confirm Password",
-                            ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "Confirm Password is required";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: CustomColors.TransparentColor),
-                          child: TextFormField(
-                            controller: passController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Icon(
-                                  Icons.lock,
-                                  color: CustomColors.accentColor,
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
-                              border: InputBorder.none,
-                              hintText: "Referral Code(Optional)",
+                              hintText: getTranslated(context, "Referral Code (Optional"),
                             ),
                             validator: (v) {
                               if (v!.isEmpty) {
@@ -2240,47 +2079,128 @@ class _SignUpScreen extends State<SignUpScreen> {
                       const SizedBox(
                         height: 8,
                       ),
-
-                      Padding(
-                        padding: const EdgeInsets.only(top: 70.0),
+                      Text(getTranslated(context, "GST Number (Optional)")),
+                      Row(
+                        children: [
+                          Radio(
+                            value: 1,
+                            fillColor: MaterialStateColor.resolveWith(
+                                    (states) => Secondry),
+                            activeColor: Secondry,
+                            groupValue: _value,
+                            onChanged: (int? value) {
+                              setState(() {
+                                _value = value!;
+                                isNonAvailable = false;
+                              });
+                            },
+                          ),
+                          Text(
+                            getTranslated(context, "Non Available Available"),
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Radio(
+                              value: 2,
+                              fillColor: MaterialStateColor.resolveWith(
+                                      (states) => Secondry),
+                              activeColor: Secondry,
+                              groupValue: _value,
+                              onChanged: (int? value) {
+                                setState(() {
+                                  _value = value!;
+                                  isAvailable = true;
+                                });
+                              }),
+                          // SizedBox(width: 10.0,),
+                          Text(
+                            getTranslated(context, "Available"),
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ],
+                      ),
+                      selected == 0
+                          ? Container(
+                        child: Row(children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                isTerm = !isTerm;
+                              });
+                            },
+                            child: Icon(
+                              isTerm
+                                  ? Icons.check_box_outlined
+                                  : Icons.check_box_outline_blank,
+                              color: Secondry,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            'I agree to all ',
+                            style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            getTranslated(context, "Terms and Conditions"),
+                            style:TextStyle(fontSize:12,fontWeight: FontWeight.bold, color: primaryColor,),
+                          ),
+                          SizedBox(width: 2,),
+                          Text(
+                            'and ',
+                            style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(width: 2,),
+                          Text(
+                            getTranslated(context, "Privacy Policy"),
+                            style: TextStyle(fontSize:12,fontWeight:FontWeight.bold, color:primaryColor,),
+                          ),
+                        ]),
+                      )
+                          : Container(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>MyStatefulWidget()));
+                        },
                         child: Container(
                             decoration: BoxDecoration(
                                 color: primaryColor,
                                 borderRadius: BorderRadius.circular(15)),
-                            height: 45,
-                            width: MediaQuery.of(context).size.width * 0.7,
-                            child: const Center(
+                            height: 60,
+                            width: MediaQuery.of(context).size.width,
+                            child:  Center(
                               child: Text(
-                                'Next',
+                                getTranslated(context, "signUp"),
                                 style: TextStyle(color: Colors.white),
                               ),
                             )),
                       ),
-                      Container(
-                        height: 50,
-                        width: 290,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 38.0),
-                          child: Row(
-                            children: [
-                              const Text('Already have an Account?'),
-                              TextButton(
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => LoginScreen()));
-                                  },
-                                  child: Text(
-                                    'Login',
-                                    style: TextStyle(color: Secondry),
-                                  ))
-                            ],
-                          ),
-                        ),
+                      Row(
+                        children: [
+                           Text(getTranslated(context, "Already have an accounting"),style: TextStyle(
+                             fontSize: 12
+                           ),),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignInScreen()));
+                              },
+                              child: Text(
+                                getTranslated(context, "LogIn"),
+                                style: TextStyle(color: Secondry,fontSize: 14),
+                              ))
+                        ],
                       ),
                       const SizedBox(
-                        height: 80,
+                        height: 5,
                       )
                     ],
                   ),
@@ -2291,5 +2211,34 @@ class _SignUpScreen extends State<SignUpScreen> {
         )
       ),
     );
+  }
+
+
+
+
+  String? catId;
+  AnimalCatList? animalCat;
+  AnimalCatResponse? animalCatResponse;
+  getCityApi() async {
+    var headers = {
+      'Cookie': 'ci_session=72caa85cedaa1a0d8ccc629445189f73af6a9946'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/goat_farm/app/v1/api/animal_category'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      var result = await response.stream.bytesToString();
+      var finalResult =  AnimalCatResponse.fromJson(json.decode(result));
+      setState(() {
+        animalCatResponse =  finalResult;
+      });
+    }
+    else {
+    print(response.reasonPhrase);
+    }
+
   }
 }

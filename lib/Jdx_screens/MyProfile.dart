@@ -290,7 +290,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                     shape: BoxShape.circle,
                                     color: whiteColor
                                 ),
-                                child:getprofile!.data![0].userImage != null ? ClipRRect(
+                                child:getprofile?.data?[0].userImage != null ? ClipRRect(
                                     borderRadius: BorderRadius.circular(100),
                                     child:Image.network("${getprofile!.data![0].userImage}")) : Image.asset('assets/ProfileAssets/sampleprofile.png'),
                               ) :
@@ -327,8 +327,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${getprofile!.data![0].userFullname}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                        Text("${getprofile?.data![0].userEmail}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                        Text("${getprofile?.data?[0].userFullname}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                        Text("${getprofile?.data?[0].userEmail}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
                         // Text("Jdx1234@gmail.com",),
                       ],
                     ),

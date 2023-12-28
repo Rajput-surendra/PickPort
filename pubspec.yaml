@@ -76,8 +76,8 @@ dependencies:
   share: ^2.0.4
   permission_handler: ^10.2.0
   intl_phone_number_input: ^0.7.0
-
-
+  dropdown_button2: any
+  curved_labeled_navigation_bar: ^2.0.2
 
 
 

@@ -15,6 +15,16 @@
   "email": "Email",
   "Forgot_pass": "Forgot Password? ",
   "getOtp": "Get OTP",
+  "name":" Name",
+  "selectState": "Select State",
+  "selectCity": "Select City",
+  "confirmPassword": "Confirm Password",
+  "signUp": "SignUp",
+
+
+
+
+
 
 
   "HOME": "Home",
@@ -22,7 +32,7 @@
 
 
   "DontHaveAccount": "Don't have an Account?",
-  "signUp": "SignUp",
+
   "fullName": "Full Name",
   "shopName": "Shop Name",
 
@@ -30,8 +40,7 @@
   "address": "Address",
   "useMyCurrentLocation": "Use My Current Location",
   "selectCountry": "Select Country",
-  "selectState": "Select State",
-  "selectCity": "Select City",
+
   "selectPinCode": "Select pin code",
   "addPanCard": "Add Pan Card",
   "addAdharCard": "Add Adhar Card",
@@ -88,7 +97,7 @@
 
   "don'tHaveAnAccount": "Don't have an account?",
   "createAnAccount": "Create an Account",
-  "name":" Name",
+
   "SIGNUP": "SIGN UP",
   "alreadyHaveAnAccount": "Already have an account?",
   "signIn": "Sign In",
@@ -207,7 +216,7 @@
   "changePassword": "Change Password",
   "oldPassword": "Old Password",
   "newPassword": "New Password",
-  "confirmPassword": "Confirm Password",
+
   "Old Password can not be empty": "Old Password can not be empty",
   "Both password does not match": "Both password does not match",
   "Password is required": "Password is required",

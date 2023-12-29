@@ -6,11 +6,14 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:job_dekho_app/Utils/api_path.dart';
 
+import '../Helper/session.dart';
 import '../Model/privacypolicy.dart';
 import '../Model/privacypolicymodel.dart';
 import '../Utils/color.dart';
 import 'MyProfile.dart';
 import 'package:http/http.dart' as http;
+
+import 'notification_Screen.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
   const PrivacyPolicyScreen({Key? key}) : super(key: key);
@@ -67,40 +70,94 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
     final size = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
-            backgroundColor: whiteColor,
-            appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: primaryColor,
-              leading: GestureDetector(
-                onTap: (){
-                  Get.back();
-                },
-                child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
-                //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
-              ),
-              title:  Text('Privacy Policy', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold,fontFamily: 'Lora'),),
+            backgroundColor: primaryColor,
 
-            ),
-            body: privacyData == null || privacyData == "" ? Center(child: CircularProgressIndicator(),) : Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(0)),
-                  color: Colors.white
-              ),
-              width: size.width,
-              height: size.height,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Html(data: "${privacyData}"),
-                    Text('${privacyData?.pgDescri}', style:  TextStyle(fontSize: 16,),),
-
-                  ],
+            body:  Column(
+              children: [
+                SizedBox(height: 10,),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20,right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                color: whiteColor,
+                                borderRadius: BorderRadius.circular(100)
+                            ),
+                            child: Center(child: Icon(Icons.arrow_back)),
+                          ),
+                        ),
+                        Text(getTranslated(context, "Privacy Policy"),style: TextStyle(color: whiteColor),),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration:  BoxDecoration(
+                              color: splashcolor,
+                              borderRadius:
+                              BorderRadius.circular(100)),
+                          child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                        const NotificationScreen()));
+                              },
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/ProfileAssets/support.png',scale: 1.3,
+                                ),
+                              )),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            )
+                Expanded(
+                  flex: 11,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: backGround,
+                          borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                      ),
+                      child:   privacyData == null || privacyData == "" ? Center(child: CircularProgressIndicator(),) : Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(topRight: Radius.circular(0)),
+                            color: Colors.white
+                        ),
+                        width: size.width,
+                        height: size.height,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Html(data: "${privacyData}"),
+                              Text('${privacyData?.pgDescri}', style:  TextStyle(fontSize: 16,),),
+
+                            ],
+                          ),
+                        ),
+                      )
+
+                  ),
+                )
+
+              ],
+            ),
+
+
+
+
         ));;
   }
 }

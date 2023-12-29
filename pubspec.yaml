@@ -78,6 +78,8 @@ dependencies:
   intl_phone_number_input: ^0.7.0
   dropdown_button2: any
   curved_labeled_navigation_bar: ^2.0.2
+  dotted_border: any
+  flutter_dash: ^1.0.0
 
 
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:job_dekho_app/Helper/session.dart';
 
 import 'package:job_dekho_app/Utils/api_path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,67 +63,107 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return SafeArea(
         child: Scaffold(
           backgroundColor: primaryColor,
-            appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: primaryColor,
-              leading: GestureDetector(
-                onTap: (){
-               Navigator.pop(context);
-                },
-                child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
-                //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
-              ),
-              title:  Text('Notification', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold,fontFamily: 'Lora'),),
-            ),
-         // body: Column(
-         //   children: [
-         //     // child: Text("${parcelhistory.data![0].orderId}")
-         //
-         //     Text("${notificationhistory!.data![0].notification}")
-         //   ],
-         // ),
-          body: Container(
-            padding: EdgeInsets.only(top: 0,bottom: 20),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(topRight: Radius.circular(0)),
-                color: Color(0xffF9F9F9)
-            ),
-            width: size.width,
-            height: size.height,
-            child:  notificationhistory == null || notificationhistory == "" ? Center(child: CircularProgressIndicator(),) :
-         ListView.builder(
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                itemCount: notificationhistory!.data!.length,
-                itemBuilder: (c,i){
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15,vertical: 5),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+          body: Column(
+            children: [
+              SizedBox(height: 10,),
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20,right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment:  MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(child: Text("${notificationhistory!.data![i].notification}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,fontFamily: 'Lora'),)),
-                          Expanded(child: Text("${notificationhistory!.data![i].date}", style: TextStyle(color: greyColor2,fontSize: 12, fontWeight: FontWeight.bold,fontFamily: 'Lora'),)),
-                        ],
+                      InkWell(
+                        onTap: (){
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              color: whiteColor,
+                              borderRadius: BorderRadius.circular(100)
+                          ),
+                          child: Center(child: Icon(Icons.arrow_back)),
+                        ),
                       ),
-                      Text("${notificationhistory!.data![i].notification}",maxLines: 2,style: TextStyle(fontFamily: 'Lora'),)
+                      Text(getTranslated(context, "Notification"),style: TextStyle(color: whiteColor),),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration:  BoxDecoration(
+                            color: splashcolor,
+                            borderRadius:
+                            BorderRadius.circular(100)),
+                        child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                      const NotificationScreen()));
+                            },
+                            child: Center(
+                              child: Image.asset(
+                                'assets/ProfileAssets/support.png',scale: 1.3,
+                              ),
+                            )),
+                      ),
                     ],
                   ),
                 ),
-              );
-            })
-          )
+              ),
+              Expanded(
+                flex: 11,
+                child: Container(
+                    decoration: BoxDecoration(
+                        color: backGround,
+                        borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                    ),
+                    child:   notificationhistory == null || notificationhistory == "" ? Center(child: CircularProgressIndicator(),) :
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemCount: notificationhistory!.data!.length,
+                          itemBuilder: (c,i){
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:  MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(child: Text("${notificationhistory!.data![i].notification}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,fontFamily: 'Lora'),)),
+                                        Expanded(child: Text("${notificationhistory!.data![i].date}", style: TextStyle(color: greyColor2,fontSize: 12, fontWeight: FontWeight.bold,fontFamily: 'Lora'),)),
+                                      ],
+                                    ),
+                                    Text("${notificationhistory!.data![i].notification}",maxLines: 2,style: TextStyle(fontFamily: 'Lora'),)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    )
+
+                ),
+              )
+
+            ],
+          ),
+
+
+
         ));
   }
 }

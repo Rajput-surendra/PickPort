@@ -27,8 +27,13 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
         getTranslated(context, 'ENGLISH_LAN'),
         getTranslated(context, 'HINDI_LAN'),
         getTranslated(context, 'MARATHI_LAN'),
+
       ];
+      setState(() {
+
+      });
     });
+
     super.initState();
 
   }

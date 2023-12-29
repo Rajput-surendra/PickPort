@@ -3,24 +3,26 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:job_dekho_app/Jdx_screens/PickPort/SupportNewScreen.dart';
 import 'package:job_dekho_app/Utils/api_path.dart';
 import 'package:job_dekho_app/Jdx_screens/MyProfile.dart';
 
-import '../Helper/session.dart';
-import '../Model/GetTmc.dart';
-import '../Utils/color.dart';
 import 'package:http/http.dart' as http;
 
-import 'notification_Screen.dart';
+import '../../Helper/session.dart';
+import '../../Model/GetTmc.dart';
+import '../../Utils/Color.dart';
 
-class TermsAndConditionScreen extends StatefulWidget {
-  const TermsAndConditionScreen({Key? key}) : super(key: key);
+
+
+class FaqScreen extends StatefulWidget {
+  const FaqScreen({Key? key}) : super(key: key);
 
   @override
-  State<TermsAndConditionScreen> createState() => _TermsAndConditionScreenState();
+  State<FaqScreen> createState() => _FaqScreenState();
 }
 
-class _TermsAndConditionScreenState extends State<TermsAndConditionScreen> {
+class _FaqScreenState extends State<FaqScreen> {
 
   GetTmc? gettmc;
   getTermCondition() async {
@@ -77,7 +79,7 @@ class _TermsAndConditionScreenState extends State<TermsAndConditionScreen> {
     return SafeArea(
         child: Scaffold(
             backgroundColor: primaryColor,
-
+           
             body : Column(
           children: [
           SizedBox(height: 10,),
@@ -102,7 +104,7 @@ class _TermsAndConditionScreenState extends State<TermsAndConditionScreen> {
                   child: Center(child: Icon(Icons.arrow_back)),
                 ),
               ),
-              Text(getTranslated(context, "Terms and Conditions"),style: TextStyle(color: whiteColor),),
+              Text(getTranslated(context, "FAQS"),style: TextStyle(color: whiteColor),),
               Container(
                 height: 40,
                 width: 40,
@@ -116,7 +118,7 @@ class _TermsAndConditionScreenState extends State<TermsAndConditionScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                              const NotificationScreen()));
+                              const SupportNewScreen()));
                     },
                     child: Center(
                       child: Image.asset(
@@ -135,14 +137,34 @@ class _TermsAndConditionScreenState extends State<TermsAndConditionScreen> {
                 color: backGround,
                 borderRadius: BorderRadius.only(topRight: Radius.circular(50))
             ),
-            child:    gettmc ==  null || gettmc == "" ? Center(child: CircularProgressIndicator(),) : ListView(
-              //crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Html(data: "${gettmc!.data!.pgDescri}"),
-              ],
-            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: 2,
+                  itemBuilder: (context,i){
+                return  Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: primaryColor)
+                    ),
+                    child: const ExpansionTile(
+                      title: Text('Faq'),
+                      children: [
+                        ListTile(
+                          title: Text('Subitem 2'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            )
+
+
         ),
-      )
+        )
 
       ],
     ),

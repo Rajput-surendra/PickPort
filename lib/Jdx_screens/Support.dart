@@ -16,6 +16,7 @@ import 'package:job_dekho_app/Utils/api_path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../Helper/session.dart';
 import '../Utils/color.dart';
 import 'Dashbord.dart';
 import 'Generatelistscreen.dart';
@@ -57,6 +58,7 @@ class _SupportScreensState extends State<SupportScreens> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: primaryColor,
       bottomSheet: InkWell(
         onTap: () {
           generateTicket();
@@ -85,292 +87,320 @@ class _SupportScreensState extends State<SupportScreens> {
           ],
         ),
       ),
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-          child: Icon(Icons.arrow_back_ios),
-          // child: Image.asset('assets/ProfileAssets/menu_icon.png', scale: 1.6,),
-        ),
-        elevation: 0,
-        backgroundColor: primaryColor,
-        title: const Text(
-          "Support",
-          style: TextStyle(fontFamily: 'Lora'),
-        ),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationScreen()));
-                },
-                child: const Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                )),
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Center(
-              child: Column(
+
+      body: Column(
+        children: [
+          SizedBox(height: 10,),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20,right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(10),
-                    child: SizedBox(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width / 1.2,
+                  InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Container(
                       height: 40,
-                      child: DropdownButton(
-                        underline: Container(),
-
-                        icon: const Padding(
-                          padding: EdgeInsets.only(right: 20),
-                          child: Icon(Icons.keyboard_arrow_down,
-                              color: Color(0xFFBF2331)),
-                        ),
-                        hint: const Padding(
-                          padding: EdgeInsets.all(5.0),
-                          child: Text("Select Query"),
-                        ),
-
-                        items: messageList.map((items) {
-                          return DropdownMenuItem(
-                            value: items,
-                            child: Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text(items.title.toString())),
-                          );
-                        }).toList(),
-                        isExpanded: true,
-
-                        value: selectedItem,
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedItem = newValue;
-                          });
+                      width: 40,
+                      decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(100)
+                      ),
+                      child: Center(child: Icon(Icons.arrow_back)),
+                    ),
+                  ),
+                  Text(getTranslated(context, "Notification"),style: TextStyle(color: whiteColor),),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration:  BoxDecoration(
+                        color: splashcolor,
+                        borderRadius:
+                        BorderRadius.circular(100)),
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  const NotificationScreen()));
                         },
-                        //show selected item
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(10),
-                    child: SizedBox(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width / 1.2,
-                      height: 40,
-                      child: DropdownButton(
-                        underline: Container(),
-
-                        icon: const Padding(
-                          padding: EdgeInsets.only(right: 20),
-                          child: Icon(Icons.keyboard_arrow_down,
-                              color: Color(0xFFBF2331)),
-                        ),
-                        hint: const Padding(
-                          padding: EdgeInsets.all(5.0),
-                          child: Text("Select Parcel Id"),
-                        ),
-
-                        items: parcelIdList.map((items) {
-                          return DropdownMenuItem(
-                            value: items,
-                            child: Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text(items.saleId.toString())),
-                          );
-                        }).toList(),
-                        isExpanded: true,
-
-                        value: selectedSellItem,
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedSellItem = newValue;
-                          });
-                        },
-                        //show selected item
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18.0, right: 18),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: splashcolor,
-                      ),
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width / 1.1,
-                      child: TextField(
-
-                        controller: subjectController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
+                        child: Center(
+                          child: Image.asset(
+                            'assets/ProfileAssets/support.png',scale: 1.3,
                           ),
-                          hintText: "Subject",
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
-                  const SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18.0, right: 18),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: splashcolor,
-                      ),
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width / 1.1,
-                      child: TextField(
-
-                        controller: emailController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: "Email",
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 17.0, right: 17),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: splashcolor,
-                      ),
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width / 1.1,
-                      height: 150,
-                      child: TextField(
-                        maxLines: 5,
-                        controller: commentController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: "Add comment",
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                  ticketDataList.isEmpty? const SizedBox.shrink() : Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(children: [
-                        Icon(Icons.history_outlined, color: primaryColor,),
-                        const SizedBox(width: 10,),
-                        const Text("TicketHistory",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
-                      ],),
-                    ),),
-                  ticketDataList.isEmpty? const SizedBox.shrink() :
-                  ListView.builder(
-                    reverse: true,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: ticketDataList.length,
-                    itemBuilder: (context, index) {
-                      var item = ticketDataList[index];
-                    return  ticketWidgets(item);/*InkWell(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Chat(id: item.id),));
-                      },
-                      child: Card(
-                        elevation: 2.0,
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'id: ${item.id}',
-                                style: const TextStyle(
-                                    fontSize: 14.0, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 5.0),
-                              Text(
-                                item.description ?? '',
-                                style: const TextStyle(fontSize: 14.0),
-                              ),
-                              const SizedBox(height: 5.0),
-                              Text(
-                                item.status == '1' ? 'Status: Closed' : 'Status: Open',
-                                style: const TextStyle(
-                                    fontSize: 14.0, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 5.0),
-                              *//*Text(
-                                'Parcel Id: ${item.saleId}',
-                                style: const TextStyle(
-                                    fontSize: 14.0, fontWeight: FontWeight.bold),
-                              ),*//*
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Date : ${item.dateCreated}',
-                                    style: const TextStyle(
-                                        fontSize: 14.0, fontWeight: FontWeight.bold),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.arrow_forward),
-                                    onPressed: () {
-                                      // TODO: navigate to support ticket details page
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );*/
-                  },),
-                  SizedBox(height: 60,),
-
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            flex: 11,
+            child: Container(
+                decoration: BoxDecoration(
+                    color: backGround,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                ),
+                child:   SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Material(
+                        elevation: 10,
+                        borderRadius: BorderRadius.circular(10),
+                        child: SizedBox(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 1.2,
+                          height: 40,
+                          child: DropdownButton(
+                            underline: Container(),
+
+                            icon: const Padding(
+                              padding: EdgeInsets.only(right: 20),
+                              child: Icon(Icons.keyboard_arrow_down,
+                                  color: Color(0xFFBF2331)),
+                            ),
+                            hint: const Padding(
+                              padding: EdgeInsets.all(5.0),
+                              child: Text("Select Query"),
+                            ),
+
+                            items: messageList.map((items) {
+                              return DropdownMenuItem(
+                                value: items,
+                                child: Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Text(items.title.toString())),
+                              );
+                            }).toList(),
+                            isExpanded: true,
+
+                            value: selectedItem,
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedItem = newValue;
+                              });
+                            },
+                            //show selected item
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Material(
+                        elevation: 10,
+                        borderRadius: BorderRadius.circular(10),
+                        child: SizedBox(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 1.2,
+                          height: 40,
+                          child: DropdownButton(
+                            underline: Container(),
+
+                            icon: const Padding(
+                              padding: EdgeInsets.only(right: 20),
+                              child: Icon(Icons.keyboard_arrow_down,
+                                  color: Color(0xFFBF2331)),
+                            ),
+                            hint: const Padding(
+                              padding: EdgeInsets.all(5.0),
+                              child: Text("Select Parcel Id"),
+                            ),
+
+                            items: parcelIdList.map((items) {
+                              return DropdownMenuItem(
+                                value: items,
+                                child: Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Text(items.saleId.toString())),
+                              );
+                            }).toList(),
+                            isExpanded: true,
+
+                            value: selectedSellItem,
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedSellItem = newValue;
+                              });
+                            },
+                            //show selected item
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20,),
+
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0, right: 18),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: splashcolor,
+                          ),
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 1.1,
+                          child: TextField(
+
+                            controller: subjectController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: "Subject",
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10,),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0, right: 18),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: splashcolor,
+                          ),
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 1.1,
+                          child: TextField(
+
+                            controller: emailController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: "Email",
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10,),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 17.0, right: 17),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: splashcolor,
+                          ),
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width / 1.1,
+                          height: 150,
+                          child: TextField(
+                            maxLines: 5,
+                            controller: commentController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: "Add comment",
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      ticketDataList.isEmpty? const SizedBox.shrink() : Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(children: [
+                            Icon(Icons.history_outlined, color: primaryColor,),
+                            const SizedBox(width: 10,),
+                            const Text("TicketHistory",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
+                          ],),
+                        ),),
+                      ticketDataList.isEmpty? const SizedBox.shrink() :
+                      ListView.builder(
+                        reverse: true,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: ticketDataList.length,
+                        itemBuilder: (context, index) {
+                          var item = ticketDataList[index];
+                          return  ticketWidgets(item);/*InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Chat(id: item.id),));
+                  },
+                  child: Card(
+                    elevation: 2.0,
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'id: ${item.id}',
+                            style: const TextStyle(
+                                fontSize: 14.0, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 5.0),
+                          Text(
+                            item.description ?? '',
+                            style: const TextStyle(fontSize: 14.0),
+                          ),
+                          const SizedBox(height: 5.0),
+                          Text(
+                            item.status == '1' ? 'Status: Closed' : 'Status: Open',
+                            style: const TextStyle(
+                                fontSize: 14.0, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 5.0),
+                          *//*Text(
+                            'Parcel Id: ${item.saleId}',
+                            style: const TextStyle(
+                                fontSize: 14.0, fontWeight: FontWeight.bold),
+                          ),*//*
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Date : ${item.dateCreated}',
+                                style: const TextStyle(
+                                    fontSize: 14.0, fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.arrow_forward),
+                                onPressed: () {
+                                  // TODO: navigate to support ticket details page
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  );*/
+                        },),
+                      SizedBox(height: 60,),
+
+                    ],
+                  ),
+                )
+
+            ),
+          )
+
+        ],
       ),
+
+
     );
   }
 

@@ -462,7 +462,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                               border: OutlineInputBorder(
                                                   borderSide: BorderSide.none),
                                               hintText: getTranslated(
-                                                  context, "Entre_Pass"),
+                                                  context, "Password"),
                                               prefixIcon: Image.asset(
                                                 'assets/AuthAssets/Icon ionic-ios-lock.png',
                                                 scale: 1.3,
@@ -660,16 +660,12 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Don't have an account? ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                     Text(getTranslated(context, "Don't have an account?"), style: TextStyle(fontWeight: FontWeight.bold),),
                     GestureDetector(
                       onTap: () {
                         Get.to(SignUpScreen());
                       },
-                      child: Text(
-                        "Sign Up",
+                      child: Text(getTranslated(context, "Sign Up"),
                         style: TextStyle(
                             color: primaryColor, fontWeight: FontWeight.bold),
                       ),

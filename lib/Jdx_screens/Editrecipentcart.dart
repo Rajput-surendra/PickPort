@@ -6,7 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 
 import '../Utils/color.dart';
 import 'Dashbord.dart';
-import 'RegisterParcel.dart';
+import 'PickPort/RegisterParcel.dart';
 import 'notification_Screen.dart';
 
 class EditeRecipentCart extends StatefulWidget {

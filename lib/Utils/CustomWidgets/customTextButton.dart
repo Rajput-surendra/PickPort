@@ -14,13 +14,13 @@ class CustomTextButton extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          width: MediaQuery.of(context).size.width / 2.2,
-          height: 45,
+          width: MediaQuery.of(context).size.width / 1.1,
+          height: 50,
           alignment: Alignment.center,
           //padding: EdgeInsets.all(6),
           decoration: BoxDecoration(
-              color: Secondry,
-              borderRadius: BorderRadius.circular(20)
+              color: primaryColor,
+              borderRadius: BorderRadius.circular(10)
           ),
           child: Text(buttonText, style: buttonTextStyle,),
         ),

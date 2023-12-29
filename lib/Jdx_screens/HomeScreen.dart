@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,9 +24,12 @@ import '../Model/bannerModel.dart';
 import '../Model/myPlanModel.dart';
 import '../Utils/api_path.dart';
 import '../Utils/color.dart';
-import 'RegisterParcel.dart';
+import 'PickPort/RegisterParcel.dart';
+import 'PickPort/SupportNewScreen.dart';
 import 'notification_Screen.dart';
 import 'signup_Screen.dart';
+String? senderLocation;
+TextEditingController addressC = TextEditingController();
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,7 +39,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  TextEditingController addressC = TextEditingController();
   TextEditingController nameC = TextEditingController();
   TextEditingController mobileC = TextEditingController();
   TextEditingController pincodeC = TextEditingController();
@@ -62,14 +66,29 @@ class _HomeScreenState extends State<HomeScreen> {
   ParcelhistoryModel? parcelhistory;
   String? userid;
 
+   updateLoction()
+   async {
+     final SharedPreferences prefs = await SharedPreferences.getInstance();
+   prefs.getString("location") == null ? _getLocation():locallocation();
+   setState(() {
 
+   });
+   }
+   locallocation() async {
+     final SharedPreferences prefs = await SharedPreferences.getInstance();
+     addressC.text = prefs.getString("location")??"";
+     setState(() {
 
+     });
+   }
   void initState() {
     // TODO: implement initState
     super.initState();
-
       parcelHistory(1);
-    getbanner();
+      getbanner();
+    updateLoction();
+
+
 
   }
 
@@ -176,7 +195,30 @@ class _HomeScreenState extends State<HomeScreen> {
         ) ??
         false; //if showDialouge had returned null, then return false
   }
+  String _location = 'Unknown';
+  Future<void> _getLocation() async {
 
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      Placemark place = placemarks[0];
+      setState(() {
+        addressC.text = '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
+        senderLocation =  addressC.text;
+      });
+    } catch (e) {
+      print("Error getting location: $e");
+      setState(() {
+        _location = 'Error getting location';
+      });
+
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -214,8 +256,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                       apiKey: Platform.isAndroid
                                           ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
                                           : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
-                                      onPlacePicked: (result) {
+                                      onPlacePicked: (result) async {
                                         print(result.formattedAddress);
+                                        final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                              prefs.setString('location',  result.formattedAddress.toString());
+
                                         setState(() {
                                           addressC.text =
                                               result.formattedAddress.toString();
@@ -297,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                            const NotificationScreen()));
+                                            const SupportNewScreen()));
                                   },
                                   child: Center(
                                     child: Image.asset(
@@ -644,7 +689,7 @@ String orderStatus(String status ){
   }
 
   cancelOrder(String orderId, int i) async{
-    var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/JDX/api/Authentication/update_parcel_status'));
+    var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/pickport/api/Authentication/update_parcel_status'));
     request.fields.addAll({
       'user_id': userid ?? '315',
       'order_id': orderId,

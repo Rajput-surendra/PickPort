@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:job_dekho_app/Jdx_screens/Payment%20method.dart';
 import 'package:job_dekho_app/Jdx_screens/parcelStetus.dart';
 import 'package:job_dekho_app/Utils/CustomWidgets/customDrawerTile.dart';
 import 'package:job_dekho_app/Utils/color.dart';
@@ -15,9 +16,12 @@ import 'package:job_dekho_app/Jdx_screens/signin_Screen.dart';
 import 'package:job_dekho_app/Jdx_screens/privacypolicy_Screen.dart';
 import 'package:job_dekho_app/Jdx_screens/termsandcondition_Screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Helper/session.dart';
 import '../Model/getprofilemodel.dart';
 import '../Utils/api_path.dart';
 import 'Mywallet.dart';
+import 'PickPort/ReferAndEran.dart';
+import 'PickPort/faq_Screen.dart';
 import 'Support.dart';
 import 'UserProfile.dart';
 import 'Dashbord.dart';
@@ -205,172 +209,243 @@ class _DrawerScreenState extends State<DrawerScreen> {
     final size = MediaQuery.of(context).size;
     return SafeArea(child: Scaffold(
 
-        appBar: AppBar(
-          /*leading: GestureDetector(
-            onTap: (){
-              Navigator.push(context,MaterialPageRoute(builder: (context)=>MyStatefulWidget()));
-              // Get.to(MyStatefulWidget());
-            },
-            child: Icon(Icons.arrow_back),
-            // child: Image.asset('assets/ProfileAssets/menu_icon.png', scale: 1.6,),
-          ),*/
-          elevation: 0,
-          backgroundColor: primaryColor,
-          title: Text("My Account",style: TextStyle(fontFamily: 'Lora'),),
-          centerTitle: true,
-          // actions: [
-          //   Padding(
-          //     padding:  EdgeInsets.only(right: 10),
-          //     child: InkWell(
-          //         onTap: (){
-          //        Get.to(const NotificationScreen());
-          //         },
-          //         child: Icon(Icons.notifications,color: Colors.white,)),
-          //   )
-          // ],
-        ),
-        backgroundColor: whiteColor,
-      body: SingleChildScrollView(
-        child: getprofile == null || getprofile == "" ? Center(child: CircularProgressIndicator(),) : Column(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: (){
-                         /* showModalBottomSheet(
-                              context: context,
-                              builder: (context){
-                                return Container(
-                                  height: 250,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(topRight: Radius.circular(10), topLeft: Radius.circular(10))
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Take Image From", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15)),
-                                      ListTile(leading: Image.asset('assets/ProfileAssets/cameraicon.png', scale: 1.5,),
-                                        title: Text('Camera', style: TextStyle(fontWeight: FontWeight.bold)),
-                                        onTap: (){
-                                          _getFromCamera();
-                                        },
-                                      ),
-                                      ListTile(leading: Image.asset('assets/ProfileAssets/galleryicon.png', scale: 1.5,),
-                                        title: const Text('Gallery', style: TextStyle(fontWeight: FontWeight.bold)),
-                                        onTap: (){
-                                          _getFromGallery();
-                                        },
-                                      ),
-                                      ListTile(leading: Image.asset('assets/ProfileAssets/cancelicon.png', scale: 1.5,),
-                                        title: const Text('Cancel',style: TextStyle(fontWeight: FontWeight.bold)),
-                                        onTap: (){
-                                          Navigator.pop(context);
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                );
-                              });*/
+        backgroundColor: primaryColor,
+      body:  Column(
+        children: [
+          SizedBox(height: 10,),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20,right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(100)
+                      ),
+                      child: Center(child: Icon(Icons.arrow_back)),
+                    ),
+                  ),
+                  Text(getTranslated(context, "My Account"),style: TextStyle(color: whiteColor),),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration:  BoxDecoration(
+                        color: splashcolor,
+                        borderRadius:
+                        BorderRadius.circular(100)),
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  const NotificationScreen()));
                         },
-                        child: Align(
-                          // alignment: Alignment.center,
-                          child: Stack(
+                        child: Center(
+                          child: Image.asset(
+                            'assets/ProfileAssets/support.png',scale: 1.3,
+                          ),
+                        )),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 11,
+            child: Container(
+                decoration: BoxDecoration(
+                    color: backGround,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                ),
+                child:   getprofile == null || getprofile == "" ? Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Row(
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              getprofile == null || getprofile == "" || getprofile != null ?  Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: whiteColor
-                                ),
-                                child:getprofile?.data?[0].userImage != null ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(100),
-                                    child:Image.network("${getprofile!.data![0].userImage}")) : Image.asset('assets/ProfileAssets/sampleprofile.png'),
-                              ) :
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: whiteColor
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child:Image.network("${getprofile?.data![0].userImage}",fit: BoxFit.fill,),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    /* showModalBottomSheet(
+                                context: context,
+                                builder: (context){
+                                  return Container(
+                                    height: 250,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(topRight: Radius.circular(10), topLeft: Radius.circular(10))
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Take Image From", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15)),
+                                        ListTile(leading: Image.asset('assets/ProfileAssets/cameraicon.png', scale: 1.5,),
+                                          title: Text('Camera', style: TextStyle(fontWeight: FontWeight.bold)),
+                                          onTap: (){
+                                            _getFromCamera();
+                                          },
+                                        ),
+                                        ListTile(leading: Image.asset('assets/ProfileAssets/galleryicon.png', scale: 1.5,),
+                                          title: const Text('Gallery', style: TextStyle(fontWeight: FontWeight.bold)),
+                                          onTap: (){
+                                            _getFromGallery();
+                                          },
+                                        ),
+                                        ListTile(leading: Image.asset('assets/ProfileAssets/cancelicon.png', scale: 1.5,),
+                                          title: const Text('Cancel',style: TextStyle(fontWeight: FontWeight.bold)),
+                                          onTap: (){
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                });*/
+                                  },
+                                  child: Align(
+                                    // alignment: Alignment.center,
+                                    child: Stack(
+                                      children: [
+                                        getprofile == null || getprofile == "" || getprofile != null ?  Container(
+                                          width: 100,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: whiteColor
+                                          ),
+                                          child:getprofile?.data?[0].userImage != null ? ClipRRect(
+                                              borderRadius: BorderRadius.circular(100),
+                                              child:Image.network("${getprofile!.data![0].userImage}")) : Image.asset('assets/ProfileAssets/sampleprofile.png'),
+                                        ) :
+                                        Container(
+                                          width: 100,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: whiteColor
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(100),
+                                            child:Image.network("${getprofile?.data![0].userImage}",fit: BoxFit.fill,),
+                                          ),
+                                        ),
+                                        /*Positioned(
+                                  bottom: 20,
+                                  right: 10,
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle
+                                    ),
+                                    child: Image.asset('assets/ProfileAssets/camera_Icon.png', scale: 1.8,),
+                                  ),),*/
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                              /*Positioned(
-                                bottom: 20,
-                                right: 10,
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${getprofile?.data?[0].userFullname}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                                  Text("${getprofile?.data?[0].userEmail}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                                  // Text("Jdx1234@gmail.com",),
+                                ],
+                              ),
+                              SizedBox(width: 10,),
+                              InkWell(
+                                onTap: (){
+                                  Get.to(UserProfile(
+                                    getprofile: getprofile,
+                                  ));
+                                },
                                 child: Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle
+                                  width: 34,
+                                  height: 34,
+                                  decoration: BoxDecoration(
+                                      color: purpleColor,
+                                      borderRadius: BorderRadius.circular(100)
                                   ),
-                                  child: Image.asset('assets/ProfileAssets/camera_Icon.png', scale: 1.8,),
-                                ),),*/
+                                  child: Image.asset('assets/ProfileAssets/editIcon.png',color: primaryColor, scale: 1.3,),
+                                ),
+                              ),
+
                             ],
                           ),
-                        ),
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${getprofile?.data?[0].userFullname}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                        Text("${getprofile?.data?[0].userEmail}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                        // Text("Jdx1234@gmail.com",),
-                      ],
-                    ),
-                    SizedBox(width: 10,),
-                    InkWell(
-                      onTap: (){
-                        Get.to(UserProfile(
-                          getprofile: getprofile,
-                        ));
-                      },
-                      child: Container(
-                        width: 34,
-                        height: 34,
-                        decoration: BoxDecoration(
-                            color: purpleColor,
-                            borderRadius: BorderRadius.circular(100)
-                        ),
-                        child: Image.asset('assets/ProfileAssets/editIcon.png',color: primaryColor, scale: 1.3,),
-                      ),
-                    ),
+                          CustomDrawerTile(tileName: getTranslated(context, "Pickport Wallet"), tileIcon: Image.asset(wattetIcons,color: Secondry, scale: 1.3,), onTap: (){Get.to(MyWallet());},),
+                          CustomDrawerTile(tileName: getTranslated(context, "Payment"), tileIcon: Image.asset(paymentIcons,color: Secondry, scale: 1.3,),onTap: (){Get.to(PaymentMethod1());},),
+                          CustomDrawerTile(tileName: getTranslated(context, "Refer and earn"), tileIcon: Image.asset(referAndEran,color: Secondry, scale: 1.3,),onTap: (){Get.to(ReferAndEranScreen());},),
+                        //  CustomDrawerTile(tileName: 'Parcel History ', tileIcon: Icon(Icons.history_sharp,color: primaryColor,),onTap: (){Get.to(ParcelHistory());},),
+                          CustomDrawerTile(tileName: getTranslated(context, "Change Password"), tileIcon: Image.asset(changepasswordIconR,color: Secondry, scale: 1.3,), onTap: (){Get.to(ChangePasswordScreen());},),
+                          // CustomDrawerTile(tileName: 'Generate Ticket', tileIcon: Image.asset(changepasswordIconR,color: primaryColor, scale: 1.3,),onTap: (){Get.to(GenerateTicket());},),
 
-                  ],
+                          // CustomDrawerTile(tileName: 'Support', tileIcon: Image.asset(shareappIconR,color: primaryColor, scale: 1.3,),onTap: (){Get.to(share());},),
+                          ///  CustomDrawerTile(tileName: 'Support', tileIcon: Image.asset(shareappIconR,color: primaryColor, scale: 1.3,),onTap: (){Get.to(SupportScreens());},),
+                          //  CustomDrawerTile(tileName: 'Feedback', tileIcon: Image.asset(privactpolicyIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(FeedbackScreen());},),
+                          /*CustomDrawerTile(tileName: 'Parcel Status', tileIcon: Image.asset(privactpolicyIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(ParcelStetus());},),*/
+                          //  CustomDrawerTile(tileName: 'Notification', tileIcon: Image.asset(notificationIconR, scale: 1.3,),onTap: (){Get.to(NotificationScreen());}),
+                          CustomDrawerTile(tileName: getTranslated(context, "Privacy Policy"), tileIcon: Image.asset(privactpolicyIconR,color: Secondry, scale: 1.3,), onTap: (){Get.to(PrivacyPolicyScreen());},),
+                          CustomDrawerTile(tileName: getTranslated(context, "Terms and Conditions"), tileIcon: Image.asset(termsandconditionIconR,color: Secondry, scale: 1.3,),onTap: (){Get.to(TermsAndConditionScreen());},),
+                          CustomDrawerTile(tileName: getTranslated(context, "FAQS"), tileIcon: Image.asset(termsandconditionIconR,color: Secondry, scale: 1.3,),onTap: (){Get.to(FaqScreen());},),
+                          //  CustomDrawerTile(tileName: 'Contact Us', tileIcon: Image.asset(contactusIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(const ContactUsScreen());},),
+                          // CustomDrawerTile(tileName: 'Sign Out', tileIcon: Image.asset(signoutIconR,color: primaryColor, scale: 1.3,),onTap: (){
+                          //
+                          //   },),
+
+                          SizedBox(height: 20,),
+                          InkWell(
+                              onTap: () {
+
+                                openLogoutDialog();
+                              },
+                              child: Container(
+                                height: 50,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width / 1.1,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: primaryColor
+                                ),
+                                child:  Text(getTranslated(context, "Logout"), style: TextStyle(
+                                  color: whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,),),
+                              )),
+                          SizedBox(height: 20,),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
 
-                CustomDrawerTile(tileName: 'Parcel History ', tileIcon: Icon(Icons.history_sharp,color: primaryColor,),onTap: (){Get.to(ParcelHistory());},),
-                CustomDrawerTile(tileName: 'Change Password', tileIcon: Image.asset(changepasswordIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(ChangePasswordScreen());},),
-               // CustomDrawerTile(tileName: 'Generate Ticket', tileIcon: Image.asset(changepasswordIconR,color: primaryColor, scale: 1.3,),onTap: (){Get.to(GenerateTicket());},),
-                 CustomDrawerTile(tileName: 'My Wallet', tileIcon: Image.asset(termsandconditionIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(MyWallet());},),
-                // CustomDrawerTile(tileName: 'Support', tileIcon: Image.asset(shareappIconR,color: primaryColor, scale: 1.3,),onTap: (){Get.to(share());},),
-                CustomDrawerTile(tileName: 'Support', tileIcon: Image.asset(shareappIconR,color: primaryColor, scale: 1.3,),onTap: (){Get.to(SupportScreens());},),
-                CustomDrawerTile(tileName: 'Feedback', tileIcon: Image.asset(privactpolicyIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(FeedbackScreen());},),
-                /*CustomDrawerTile(tileName: 'Parcel Status', tileIcon: Image.asset(privactpolicyIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(ParcelStetus());},),*/
-                //  CustomDrawerTile(tileName: 'Notification', tileIcon: Image.asset(notificationIconR, scale: 1.3,),onTap: (){Get.to(NotificationScreen());}),
-                CustomDrawerTile(tileName: 'Privacy Policy', tileIcon: Image.asset(privactpolicyIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(PrivacyPolicyScreen());},),
-                CustomDrawerTile(tileName: 'Terms & Conditions', tileIcon: Image.asset(termsandconditionIconR,color: primaryColor, scale: 1.3,),onTap: (){Get.to(TermsAndConditionScreen());},),
-                CustomDrawerTile(tileName: 'Contact Us', tileIcon: Image.asset(contactusIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(const ContactUsScreen());},),
-                CustomDrawerTile(tileName: 'Sign Out', tileIcon: Image.asset(signoutIconR,color: primaryColor, scale: 1.3,),onTap: (){openLogoutDialog();},),
-              ],
-            )
-          ],
-        ),
-      )
+
+            ),
+          )
+
+        ],
+      ),
+
+
     ));
   }
 }

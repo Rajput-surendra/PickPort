@@ -6,9 +6,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:job_dekho_app/Jdx_screens/MyProfile.dart';
+import 'package:job_dekho_app/Jdx_screens/PickPort/SupportNewScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../Helper/session.dart';
 import '../Model/getprofilemodel.dart';
 import '../Model/updateprofilemodel.dart';
 import '../Utils/api_path.dart';
@@ -193,120 +195,154 @@ class _UserProfileState extends State<UserProfile> {
     final size = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
-            backgroundColor: profileBg,
-            appBar: AppBar(
-              leading: GestureDetector(
-                onTap: () async {
-                  Get.back();
-                },
-                child: Icon(Icons.arrow_back_sharp),
-              ),
-              elevation: 0,
-              backgroundColor: primaryColor,
-              title: const Text(
-                'My Profile',
-                style: TextStyle(fontFamily: 'Lora'),
-              ),
-              centerTitle: true,
-            ),
-            body: Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(0),
-                      topLeft: Radius.circular(0)),
-                  color: profileBg,
-                ),
-                alignment: Alignment.center,
-                width: size.width,
-                height: size.height / 1.2,
-                child: SingleChildScrollView(
-                    child:
-                        // seekerProfileModel == null  || addJobDataModel == null  ? Center(child: CircularProgressIndicator(),) :
-                        Column(
-                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return Container(
-                                height: 250,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(10),
-                                        topLeft: Radius.circular(10))),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("Take Image From",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15)),
-                                    ListTile(
-                                      leading: Image.asset(
-                                        'assets/ProfileAssets/cameraicon.png',
-                                        scale: 1.5,
-                                      ),
-                                      title: Text('Camera',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      onTap: () {
-                                        _getFromCamera();
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Image.asset(
-                                        'assets/ProfileAssets/galleryicon.png',
-                                        scale: 1.5,
-                                      ),
-                                      title: const Text('Gallery',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      onTap: () {
-                                        _getFromGallery();
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Image.asset(
-                                        'assets/ProfileAssets/cancelicon.png',
-                                        scale: 1.5,
-                                      ),
-                                      title: const Text('Cancel',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    )
-                                  ],
+            backgroundColor: primaryColor,
+
+            body:  Column(
+              children: [
+                SizedBox(height: 10,),
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20,right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                color: whiteColor,
+                                borderRadius: BorderRadius.circular(100)
+                            ),
+                            child: Center(child: Icon(Icons.arrow_back)),
+                          ),
+                        ),
+                        Text(getTranslated(context, "My Profile"),style: TextStyle(color: whiteColor),),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration:  BoxDecoration(
+                              color: splashcolor,
+                              borderRadius:
+                              BorderRadius.circular(100)),
+                          child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                        const SupportNewScreen()));
+                              },
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/ProfileAssets/support.png',scale: 1.3,
                                 ),
-                              );
-                            });
-                      },
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Stack(
-                          children: [
-                            imageFile == null
-                                ? Container(
-                                    width: 120,
-                                    height: 120,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: whiteColor),
-                                    child: ClipRRect(
-                                        borderRadius:
+                              )),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 11,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: backGround,
+                          borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                      ),
+                      child:
+                      SingleChildScrollView(
+                          child:
+                          // seekerProfileModel == null  || addJobDataModel == null  ? Center(child: CircularProgressIndicator(),) :
+                          Column(
+                            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Container(
+                                          height: 250,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                  topRight: Radius.circular(10),
+                                                  topLeft: Radius.circular(10))),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Take Image From",
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 15)),
+                                              ListTile(
+                                                leading: Image.asset(
+                                                  'assets/ProfileAssets/cameraicon.png',
+                                                  scale: 1.5,
+                                                ),
+                                                title: Text('Camera',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold)),
+                                                onTap: () {
+                                                  _getFromCamera();
+                                                },
+                                              ),
+                                              ListTile(
+                                                leading: Image.asset(
+                                                  'assets/ProfileAssets/galleryicon.png',
+                                                  scale: 1.5,
+                                                ),
+                                                title: const Text('Gallery',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold)),
+                                                onTap: () {
+                                                  _getFromGallery();
+                                                },
+                                              ),
+                                              ListTile(
+                                                leading: Image.asset(
+                                                  'assets/ProfileAssets/cancelicon.png',
+                                                  scale: 1.5,
+                                                ),
+                                                title: const Text('Cancel',
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold)),
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      });
+                                },
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Stack(
+                                    children: [
+                                      imageFile == null
+                                          ? Container(
+                                        width: 120,
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: whiteColor),
+                                        child: ClipRRect(
+                                            borderRadius:
                                             BorderRadius.circular(100),
-                                        child: Image.network(
-                                          "${widget.getprofile?.data?.first.userImage}",
-                                          fit: BoxFit.fill,
-                                        )),
-                                  )
-                                :  Container(
+                                            child: Image.network(
+                                              "${widget.getprofile?.data?.first.userImage}",
+                                              fit: BoxFit.fill,
+                                            )),
+                                      )
+                                          :  Container(
                                         width: 120,
                                         height: 120,
                                         decoration: BoxDecoration(
@@ -314,157 +350,167 @@ class _UserProfileState extends State<UserProfile> {
                                             color: whiteColor),
                                         child: ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(100),
+                                          BorderRadius.circular(100),
                                           child: Image.file(
                                             imageFile ?? File(''),
                                             fit: BoxFit.fill,
                                           ),
                                         ),
                                       ),
-                            Positioned(
-                              bottom: 20,
-                              right: 10,
-                              child: Container(
-                                width: 30,
-                                height: 30,
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle),
-                                child: Image.asset(
-                                  'assets/ProfileAssets/camera_Icon.png',
-                                  scale: 1.8,
+                                      Positioned(
+                                        bottom: 20,
+                                        right: 10,
+                                        child: Container(
+                                          width: 30,
+                                          height: 30,
+                                          decoration: const BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle),
+                                          child: Image.asset(
+                                            'assets/ProfileAssets/camera_Icon.png',
+                                            scale: 1.8,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Material(
-                      elevation: 10,
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 1.2,
-                        height: 50,
-                        child: TextField(
-                          controller: nameController,
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(
-                                borderSide: BorderSide.none),
-                            // hintText: "${getprofile?.data![0].userFullname}",
-                            prefixIcon: Image.asset(
-                              'assets/AuthAssets/Icon awesome-user.png',
-                              scale: 2.1,
-                              color: primaryColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Material(
-                      elevation: 10,
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 1.2,
-                        height: 50,
-                        child: TextField(
-                          controller: emailController,
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(
-                                borderSide: BorderSide.none),
-                            // hintText: "${getprofile?.data![0].userEmail}",
-                            prefixIcon: Image.asset(
-                              'assets/AuthAssets/Icon material-email.png',
-                              scale: 2.1,
-                              color: primaryColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Material(
-                      elevation: 10,
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 1.2,
-                        height: 50,
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          readOnly: true,
-                          controller: mobileController,
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(
-                                borderSide: BorderSide.none),
-                            hintText: "Mobile No.",
-                            prefixIcon: Image.asset(
-                              'assets/AuthAssets/Icon ionic-ios-call.png',
-                              scale: 2.1,
-                              color: primaryColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    // Material(
-                    //   elevation: 10,
-                    //   borderRadius: BorderRadius.circular(10),
-                    //   child: Container(
-                    //     width: MediaQuery.of(context).size.width / 1.2,
-                    //     height: 50,
-                    //     child: TextField(
-                    //       controller: passwordController,
-                    //       decoration: InputDecoration(
-                    //         border: const OutlineInputBorder(
-                    //             borderSide: BorderSide.none
-                    //         ),
-                    //         hintText: "password",
-                    //         prefixIcon: Image.asset('assets/AuthAssets/Icon material-email.png', scale: 2.1, color: primaryColor,),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Material(
+                                elevation: 10,
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width / 1.2,
+                                  height: 50,
+                                  child: TextField(
+                                    controller: nameController,
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(
+                                          borderSide: BorderSide.none),
+                                      // hintText: "${getprofile?.data![0].userFullname}",
+                                      prefixIcon: Image.asset(
+                                        'assets/AuthAssets/Icon awesome-user.png',
+                                        scale: 2.1,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Material(
+                                elevation: 10,
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width / 1.2,
+                                  height: 50,
+                                  child: TextField(
+                                    controller: emailController,
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(
+                                          borderSide: BorderSide.none),
+                                      // hintText: "${getprofile?.data![0].userEmail}",
+                                      prefixIcon: Image.asset(
+                                        'assets/AuthAssets/Icon material-email.png',
+                                        scale: 2.1,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Material(
+                                elevation: 10,
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width / 1.2,
+                                  height: 50,
+                                  child: TextField(
+                                    keyboardType: TextInputType.number,
+                                    readOnly: true,
+                                    controller: mobileController,
+                                    decoration: InputDecoration(
+                                      border: const OutlineInputBorder(
+                                          borderSide: BorderSide.none),
+                                      hintText: "Mobile No.",
+                                      prefixIcon: Image.asset(
+                                        'assets/AuthAssets/Icon ionic-ios-call.png',
+                                        scale: 2.1,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              // Material(
+                              //   elevation: 10,
+                              //   borderRadius: BorderRadius.circular(10),
+                              //   child: Container(
+                              //     width: MediaQuery.of(context).size.width / 1.2,
+                              //     height: 50,
+                              //     child: TextField(
+                              //       controller: passwordController,
+                              //       decoration: InputDecoration(
+                              //         border: const OutlineInputBorder(
+                              //             borderSide: BorderSide.none
+                              //         ),
+                              //         hintText: "password",
+                              //         prefixIcon: Image.asset('assets/AuthAssets/Icon material-email.png', scale: 2.1, color: primaryColor,),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
 
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        UpDateprofile();
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  UpDateprofile();
 
-                      },
-                      child: Container(
-                        height: 50,
-                        width: MediaQuery.of(context).size.width / 1.4,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: Secondry),
-                        child: Text(
-                          "Edit And Save",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )))));
+                                },
+                                child: Container(
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width / 1.4,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      color: Secondry),
+                                  child: Text(
+                                    "Edit And Save",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ))
+
+                  ),
+                )
+
+              ],
+            ),
+
+
+
+        ));
   }
 }

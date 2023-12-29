@@ -1440,7 +1440,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     var request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'https://developmentalphawizz.com/JDX/api/Authentication/deliveryBoyRegistration'));
+            'https://developmentalphawizz.com/pickport/api/Authentication/deliveryBoyRegistration'));
     request.fields.addAll({
       'user_fullname':
       '210                                                                         ',
@@ -1476,7 +1476,7 @@ class _SignUpScreen extends State<SignUpScreen> {
   //   var request = http.MultipartRequest(
   //       'POST',
   //       Uri.parse(
-  //           'https://developmentalphawizz.com/JDX/api/Authentication/deliveryBoyRegistration'));
+  //           'https://developmentalphawizz.com/pickport/api/Authentication/deliveryBoyRegistration'));
   //
   //   request.fields.addAll({
   //     'user_fullname': nameController.text,
@@ -1702,7 +1702,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                               ),
                               contentPadding: EdgeInsets.only(top: 20, left: 5),
                               border: InputBorder.none,
-                              hintText: getTranslated(context, "name"),
+                              hintText: getTranslated(context, "Name"),
                             ),
                             validator: (v) {
                               if (v!.isEmpty) {
@@ -1817,7 +1817,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton2<AnimalCatList>(
                                       isExpanded: true,
-                                      hint:  Text(getTranslated(context, "selectState"),
+                                      hint:  Text(getTranslated(context, "State"),
                                         style: const TextStyle(
                                           color: Colors.black54,fontWeight: FontWeight.w500,
                                         ),),
@@ -1895,7 +1895,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton2<AnimalCatList>(
                                     isExpanded: true,
-                                    hint:  Text(getTranslated(context, "selectCity"),
+                                    hint:  Text(getTranslated(context, "City"),
                                       style: const TextStyle(
                                         color: Colors.black54,fontWeight: FontWeight.w500,
                                       ),),
@@ -1970,7 +1970,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                               border: OutlineInputBorder(
                                   borderSide: BorderSide.none),
                               hintText: getTranslated(
-                                  context, "Entre_Pass"),
+                                  context, "Password"),
                               prefixIcon: Image.asset(
                                 'assets/AuthAssets/Icon ionic-ios-lock.png',
                                 scale: 1.3,

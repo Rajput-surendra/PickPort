@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:job_dekho_app/Jdx_screens/PickPort/SupportNewScreen.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Helper/session.dart';
 import '../Model/AddMoneyModel.dart';
 import '../Utils/api_path.dart';
 import '../Utils/color.dart';
@@ -72,80 +74,148 @@ class _AddAmountState extends State<AddAmount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: primaryColor,
-        leading: GestureDetector(
-          onTap: (){
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
-          //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
-        ),
-        title:  Text('Add Amount', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold),),
-        // actions: [
-        //   Padding(
-        //     padding:  EdgeInsets.only(right: 10),
-        //     child: InkWell(
-        //         onTap: (){
-        //           Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen()));
-        //         },
-        //         child: Icon(Icons.notifications,color: Colors.white,)),
-        //   )
-        // ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Center(child: Text("Add money to wallet",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),)),
-              Text("Available Balance",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-              Text(widget.walletBalance??'---',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-              SizedBox(height: 20,),
-              Material(
-                elevation: 10,
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 1.2,
-                  height: 50,
-                  child: TextField(
-                    controller: amountCtr,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide.none
+      backgroundColor: primaryColor,
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   centerTitle: true,
+      //   backgroundColor: primaryColor,
+      //   leading: GestureDetector(
+      //     onTap: (){
+      //       Navigator.pop(context);
+      //     },
+      //     child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
+      //     //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
+      //   ),
+      //   title:  Text('Add Amount', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold),),
+      //   // actions: [
+      //   //   Padding(
+      //   //     padding:  EdgeInsets.only(right: 10),
+      //   //     child: InkWell(
+      //   //         onTap: (){
+      //   //           Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen()));
+      //   //         },
+      //   //         child: Icon(Icons.notifications,color: Colors.white,)),
+      //   //   )
+      //   // ],
+      // ),
+      body:   Column(
+        children: [
+          SizedBox(height: 10,),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20,right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(100)
                       ),
-                      hintText: "Amount",
+                      child: Center(child: Icon(Icons.arrow_back)),
+                    ),
+                  ),
+                  Text(getTranslated(context, "Add Amount"),style: TextStyle(color: whiteColor),),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration:  BoxDecoration(
+                        color: splashcolor,
+                        borderRadius:
+                        BorderRadius.circular(100)),
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  const SupportNewScreen()));
+                        },
+                        child: Center(
+                          child: Image.asset(
+                            'assets/ProfileAssets/support.png',scale: 1.3,
+                          ),
+                        )),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 11,
+            child: Container(
+                decoration: BoxDecoration(
+                    color: backGround,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                ),
+                child:
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Center(child: Text("Add money to wallet",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),)),
+                        Text("Available Balance",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
+                        Text(widget.walletBalance??'---',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                        SizedBox(height: 20,),
+                        Material(
+                          elevation: 10,
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 1.2,
+                            height: 50,
+                            child: TextField(
+                              controller: amountCtr,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(
+                                    borderSide: BorderSide.none
+                                ),
+                                hintText: "Amount",
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                        InkWell(
+                          onTap: (){
+                            if (_formKey.currentState!.validate()) {
+                              openCheckout();
+                              // Get.to(ParceldetailsScreen());
+                            }
+                            // Get.to(AddAmount());
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: primaryColor,
+                            ),
+                            height: 40,
+                            width: MediaQuery.of(context).size.width/2.5,
+                            child: Center(child: Text("Proceed",style: TextStyle(color: whiteColor,fontSize: 15),)),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20,),
-              InkWell(
-                onTap: (){
-                  if (_formKey.currentState!.validate()) {
-                    openCheckout();
-                    // Get.to(ParceldetailsScreen());
-                  }
-                  // Get.to(AddAmount());
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: primaryColor,
-                  ),
-                  height: 40,
-                  width: MediaQuery.of(context).size.width/2.5,
-                  child: Center(child: Text("Proceed",style: TextStyle(color: whiteColor,fontSize: 15),)),
-                ),
-              ),
-            ],
-          ),
-        ),
+
+            ),
+          )
+
+        ],
       ),
+
+
+
     );
   }
 

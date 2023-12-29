@@ -14,14 +14,15 @@ final Color greyColor3 = Color(0xFF919191);
 final Color profileBg = Color(0xFFF6F6F6);
 final Color greyColor2 = Color(0xFF747474);
 final Color purpleColor = Color(0xFFECE1FF);
+final Color backColor = Colors.black;
 
 //TextStyles
-final TextStyle buttonTextStyle = TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: Colors.black);
+final TextStyle buttonTextStyle = TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: Colors.white);
 
 class CustomColors {
   static const Color primaryColor = Color(0xFF6200EE);
   static const Color secondaryColor = Color(0xFF03DAC6);
-  static const Color accentColor = Color(0xFF66CC00);
+  static const Color accentColor = Color(0xFF0F368C);
   static const Color TransparentColor= Color(0xFFFFFFFF);
   static const Color White= Color(0xFFffffff);
   static const Color LightblueColor= Color(0xFF222443);

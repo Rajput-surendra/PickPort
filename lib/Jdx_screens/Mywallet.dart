@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:job_dekho_app/Jdx_screens/parceldetailsscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Helper/session.dart';
 import '../Model/AddMoneyModel.dart';
 import '../Model/WalletHistoryModel.dart';
 import '../Utils/api_path.dart';
@@ -66,120 +67,163 @@ class _MyWalletState extends State<MyWallet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: primaryColor,
-        leading: GestureDetector(
-          onTap: (){
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
-          //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
-        ),
-        title:  Text('My Wallet', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold),),
-        actions: [
-          Padding(
-            padding:  const EdgeInsets.only(right: 10),
-            child: InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationScreen()));
-                },
-                child: const Icon(Icons.notifications,color: Colors.white,)),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const Center(child: Text("Available Balance",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),)),
-              Text("₹ ${walletHistorymodel?.wallet?? '---'}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-             const SizedBox(height: 20,),
-              InkWell(
-                onTap: (){
-                  if (_formKey.currentState!.validate()) {
-                    //walletHistroy();
-                    Get.to(AddAmount(walletBalance: walletHistorymodel?.wallet??'--',))?.then((value) => walletHistroy() );
-                  }
-                  // addMoney();
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: primaryColor,
-                  ),
-                  height: 40,
-                  width: MediaQuery.of(context).size.width/2.5,
-                  child: Center(
-                      child: Text(
-                        "Add Money",
-                        style: TextStyle(color: whiteColor,fontSize: 15),
+   backgroundColor: primaryColor,
+      body:  Column(
+        children: [
+          SizedBox(height: 10,),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20,right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(100)
                       ),
+                      child: Center(child: Icon(Icons.arrow_back)),
+                    ),
                   ),
-                ),
+                  Text(getTranslated(context, "Pickport Wallet"),style: TextStyle(color: whiteColor),),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration:  BoxDecoration(
+                        color: splashcolor,
+                        borderRadius:
+                        BorderRadius.circular(100)),
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  const NotificationScreen()));
+                        },
+                        child: Center(
+                          child: Image.asset(
+                            'assets/ProfileAssets/support.png',scale: 1.3,
+                          ),
+                        )),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20,),
-               Align(
-                alignment: Alignment.topLeft,
-                  child: Row(children: [
-                    Icon(Icons.account_balance_wallet, color: primaryColor,),
-                    const SizedBox(width: 10,),
-                    const Text("WalletHistory",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
-                  ],),),
-              walletHistorymodel?.data == null ? Center(child: CircularProgressIndicator(color: splashcolor,),) : walletHistorymodel?.data?.isEmpty ?? true ?
-              const Text("Not Available",): ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: walletHistorymodel?.data?.length,
-                itemBuilder: (context, index) {
-                var item = walletHistorymodel?.data?[index];
-                return Card(
-                  elevation: 2.0,
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+            ),
+          ),
+          Expanded(
+            flex: 11,
+            child: Container(
+                decoration: BoxDecoration(
+                    color: backGround,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                ),
+                child:      SingleChildScrollView(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Form(
+                    key: _formKey,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Amount: ${item?.amount}',
-                          style: const TextStyle(
-                              fontSize: 14.0, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 5.0),
-                        Text(
-                          'Payment Type: ${item?.paymentType}',
-                          style: const TextStyle(fontSize: 14.0),
-                        ),
-                        const SizedBox(height: 5.0),
-                        Text(
-                          'Status: ${item?.status}',
-                          style: const TextStyle(
-                              fontSize: 14.0, fontWeight: FontWeight.bold),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Date : ${item?.createDt}',
-                              style: const TextStyle(
-                                  fontSize: 14.0, fontWeight: FontWeight.bold),
+                        const Center(child: Text("Available Balance",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),)),
+                        Text("₹ ${walletHistorymodel?.wallet?? '---'}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                        const SizedBox(height: 20,),
+                        InkWell(
+                          onTap: (){
+                            if (_formKey.currentState!.validate()) {
+                              //walletHistroy();
+                              Get.to(AddAmount(walletBalance: walletHistorymodel?.wallet??'--',))?.then((value) => walletHistroy() );
+                            }
+                            // addMoney();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: primaryColor,
                             ),
-                          ],
+                            height: 40,
+                            width: MediaQuery.of(context).size.width/2.5,
+                            child: Center(
+                              child: Text(
+                                "Add Money",
+                                style: TextStyle(color: whiteColor,fontSize: 15),
+                              ),
+                            ),
+                          ),
                         ),
+                        const SizedBox(height: 20,),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Row(children: [
+                            Icon(Icons.account_balance_wallet, color: primaryColor,),
+                            const SizedBox(width: 10,),
+                            const Text("WalletHistory",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
+                          ],),),
+                        walletHistorymodel?.data == null ? Center(child: CircularProgressIndicator(color: splashcolor,),) : walletHistorymodel?.data?.isEmpty ?? true ?
+                        const Text("Not Available",): ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: walletHistorymodel?.data?.length,
+                          itemBuilder: (context, index) {
+                            var item = walletHistorymodel?.data?[index];
+                            return Card(
+                              elevation: 2.0,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Amount: ${item?.amount}',
+                                      style: const TextStyle(
+                                          fontSize: 14.0, fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Text(
+                                      'Payment Type: ${item?.paymentType}',
+                                      style: const TextStyle(fontSize: 14.0),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Text(
+                                      'Status: ${item?.status}',
+                                      style: const TextStyle(
+                                          fontSize: 14.0, fontWeight: FontWeight.bold),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Date : ${item?.createDt}',
+                                          style: const TextStyle(
+                                              fontSize: 14.0, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },)
                       ],
                     ),
                   ),
-                );
-              },)
-            ],
-          ),
-        ),
+                ),
+
+            ),
+          )
+
+        ],
       ),
+
+
     );
   }
 }

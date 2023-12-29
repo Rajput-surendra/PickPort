@@ -32,7 +32,7 @@
 //     var headers = {
 //       'Cookie': 'ci_session=b3b229754d182b6e4d05901374d052785b664b07'
 //     };
-//     var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/JDX/Api/change_password'));
+//     var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/pickport/Api/change_password'));
 //     request.fields.addAll({
 //       'user_id': '${userid}',
 //       'current_password': '${oldpswController.text}',
@@ -153,6 +153,7 @@ import 'package:job_dekho_app/Jdx_screens/signin_Screen.dart';
 import 'package:job_dekho_app/Utils/CustomWidgets/customTextButton.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Helper/session.dart';
 import '../Model/ChangepasswordModel.dart';
 import '../Utils/api_path.dart';
 import '../Utils/color.dart';
@@ -214,87 +215,177 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     final size = MediaQuery.of(context).size;
     return SafeArea(child: Scaffold(
       backgroundColor: primaryColor,
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: (){
-            Get.back();
-          },
-          child: Icon(Icons.arrow_back),
-        ),
-        elevation: 0,
-        backgroundColor: primaryColor,
-        title: Text('Change Password',style: TextStyle(fontFamily: 'Lora'),),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding:  EdgeInsets.only(right: 10),
-            child: InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen()));
-                },
-                child: Icon(Icons.notifications,color: Colors.white,)),
+      body:  Column(
+        children: [
+          SizedBox(height: 10,),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20,right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(100)
+                      ),
+                      child: Center(child: Icon(Icons.arrow_back)),
+                    ),
+                  ),
+                  Text(getTranslated(context, "Change Password"),style: TextStyle(color: whiteColor),),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration:  BoxDecoration(
+                        color: splashcolor,
+                        borderRadius:
+                        BorderRadius.circular(100)),
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  const NotificationScreen()));
+                        },
+                        child: Center(
+                          child: Image.asset(
+                            'assets/ProfileAssets/support.png',scale: 1.3,
+                          ),
+                        )),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 11,
+            child: Container(
+                decoration: BoxDecoration(
+                    color: backGround,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 50,),
+                      Material(
+                        elevation: 10,
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          height: 50,
+                          child: TextField(
+                            controller: oldpswController,
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(
+                                  borderSide: BorderSide.none
+                              ),
+                              hintText: getTranslated(context, "Ond Password"),
+                              prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 2.1, color: primaryColor,),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 40,),
+                      Material(
+                        elevation: 10,
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          height: 50,
+                          child: TextField(
+                            controller: newpswController,
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(
+                                  borderSide: BorderSide.none
+                              ),
+                              hintText: getTranslated(context, "New Password"),
+                              prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 2.1, color: primaryColor,),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 40,),
+                      CustomTextButton(buttonText: getTranslated(context, "Save"), onTap: (){
+                        changePassword();
+                        // Get.to(DrawerScreen());
+                      },),
+                    ],
+                  ),
+                ),
+
+            ),
           )
+
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height/1.1,
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          width: size.width,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(topRight: Radius.circular(0))
-          ),
-          //padding: EdgeInsets.symmetric(vertical: 30),
-          child: Column(
-            children: [
-              SizedBox(height: 70,),
-              Material(
-                elevation: 10,
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 1.2,
-                  height: 50,
-                  child: TextField(
-                    controller: oldpswController,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide.none
-                      ),
-                      hintText: "Old Password",
-                      prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 2.1, color: primaryColor,),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 40,),
-              Material(
-                elevation: 10,
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 1.2,
-                  height: 50,
-                  child: TextField(
-                    controller: newpswController,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide.none
-                      ),
-                      hintText: "New Password",
-                      prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 2.1, color: primaryColor,),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 40,),
-              CustomTextButton(buttonText: "save", onTap: (){
-                changePassword();
-                // Get.to(DrawerScreen());
-              },),
-            ],
-          ),
-        ),
-      ),
+
+      // SingleChildScrollView(
+      //   child: Container(
+      //     height: MediaQuery.of(context).size.height/1.1,
+      //     padding: EdgeInsets.symmetric(horizontal: 12),
+      //     width: size.width,
+      //     decoration: BoxDecoration(
+      //         color: Colors.white,
+      //         borderRadius: BorderRadius.only(topRight: Radius.circular(0))
+      //     ),
+      //     //padding: EdgeInsets.symmetric(vertical: 30),
+      //     child: Column(
+      //       children: [
+      //         SizedBox(height: 70,),
+      //         Material(
+      //           elevation: 10,
+      //           borderRadius: BorderRadius.circular(10),
+      //           child: Container(
+      //             width: MediaQuery.of(context).size.width / 1.2,
+      //             height: 50,
+      //             child: TextField(
+      //               controller: oldpswController,
+      //               decoration: InputDecoration(
+      //                 border: const OutlineInputBorder(
+      //                     borderSide: BorderSide.none
+      //                 ),
+      //                 hintText: "Old Password",
+      //                 prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 2.1, color: primaryColor,),
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //         SizedBox(height: 40,),
+      //         Material(
+      //           elevation: 10,
+      //           borderRadius: BorderRadius.circular(10),
+      //           child: Container(
+      //             width: MediaQuery.of(context).size.width / 1.2,
+      //             height: 50,
+      //             child: TextField(
+      //               controller: newpswController,
+      //               decoration: InputDecoration(
+      //                 border: const OutlineInputBorder(
+      //                     borderSide: BorderSide.none
+      //                 ),
+      //                 hintText: "New Password",
+      //                 prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 2.1, color: primaryColor,),
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //         SizedBox(height: 40,),
+      //         CustomTextButton(buttonText: "save", onTap: (){
+      //           changePassword();
+      //           // Get.to(DrawerScreen());
+      //         },),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     ));
   }
 }

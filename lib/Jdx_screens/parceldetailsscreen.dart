@@ -20,7 +20,7 @@ import '../Model/parceldetailsmodel.dart';
 import '../Utils/api_path.dart';
 import '../Utils/color.dart';
 import 'Payment method.dart';
-import 'RegisterParcel.dart';
+import 'PickPort/RegisterParcel.dart';
 import 'notification_Screen.dart';
 import 'package:http/http.dart ' as http;
 
@@ -683,7 +683,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                       ? const SizedBox.shrink()
                       : InkWell(
                           onTap: () {
-                            Get.to(PaymentMethod(
+                            Get.to(PaymentMethod1(
                               orderid: parceldetails?.data![0].orderId,
                               totalAmount: _finalPrice,
                             ));
@@ -743,7 +743,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                   CircleAvatar(
                     backgroundColor: splashcolor.withOpacity(0.5),
                     backgroundImage: NetworkImage(
-                        'https://developmentalphawizz.com/JDX/${image}'),
+                        'https://developmentalphawizz.com/pickport/${image}'),
                     radius: 30,
                   ),
                   const SizedBox(width: 10),

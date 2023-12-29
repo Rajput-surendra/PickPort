@@ -14,14 +14,15 @@ import 'package:job_dekho_app/Jdx_screens/parceldetailsscreen.dart';
 //import 'package:place_picker/widgets/place_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Helper/session.dart';
-import '../Model/MaterialCategoryModel.dart';
-import '../Model/ParcelWeightModel.dart';
-import '../Model/registerparcelmodel.dart';
-import '../Utils/api_path.dart';
-import '../Utils/color.dart';
+import '../../Helper/session.dart';
+import '../../Model/MaterialCategoryModel.dart';
+import '../../Model/ParcelWeightModel.dart';
+import '../../Model/registerparcelmodel.dart';
+import '../../Utils/api_path.dart';
+import '../../Utils/color.dart';
+import '../HomeScreen.dart';
 import 'RegisterParcelDetails.dart';
-import 'notification_Screen.dart';
+import '../notification_Screen.dart';
 
 class RegistParcelScreen extends StatefulWidget {
   const RegistParcelScreen({Key? key}) : super(key: key);
@@ -184,6 +185,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    senderAddressCtr.text  =  addressC.text;
     Future.delayed(Duration(milliseconds: 100), () {
       return materialCategory();
     });
@@ -236,7 +238,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
         padding: const EdgeInsets.only(left: 20,bottom: 20,right: 20),
         child: InkWell(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterParcelDetails(dropLocation: recipientAddressCtr.text,)));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterParcelDetails(dropLocation: recipientAddressCtr.text,picLocation: senderAddressCtr.text,)));
           },
           child: Container(
               decoration: BoxDecoration(

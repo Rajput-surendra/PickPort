@@ -15,18 +15,19 @@ import 'package:job_dekho_app/Jdx_screens/parceldetailsscreen.dart';
 //import 'package:place_picker/entities/location_result.dart';
 //import 'package:place_picker/widgets/place_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:job_dekho_app/Jdx_screens/PickPort/select_Vehicle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Helper/session.dart';
-import '../Model/MaterialCategoryModel.dart';
-import '../Model/ParcelWeightModel.dart';
-import '../Model/registerparcelmodel.dart';
-import '../Utils/api_path.dart';
-import '../Utils/color.dart';
-import 'notification_Screen.dart';
+import '../../Helper/session.dart';
+import '../../Model/MaterialCategoryModel.dart';
+import '../../Model/ParcelWeightModel.dart';
+import '../../Model/registerparcelmodel.dart';
+import '../../Utils/api_path.dart';
+import '../../Utils/color.dart';
+import '../notification_Screen.dart';
 
 class RegisterParcelDetails extends StatefulWidget {
-   RegisterParcelDetails({Key? key,this.dropLocation}) : super(key: key);
-   String ? dropLocation;
+   RegisterParcelDetails({Key? key,this.dropLocation,this.picLocation}) : super(key: key);
+   String ? dropLocation,picLocation;
   @override
   State<RegisterParcelDetails> createState() => _RegisterParcelDetailsState();
 }
@@ -843,13 +844,15 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
                                   SizedBox(height: 20,),
                                   InkWell(
                                       onTap: () {
+                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SelcetVhicle(dropLocation: widget.dropLocation,picLocation: widget.picLocation,)));
                                         if(receiverList.isEmpty) {
                                           if (_formKey.currentState!.validate()) {
-                                            senParcel();
+                                           senParcel();
                                             // Get.to(ParceldetailsScreen());
                                           }
                                         }else {
-                                          senParcel();
+
+                                        senParcel();
                                         }
                                       },
                                       child: Container(
@@ -863,7 +866,7 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
                                             borderRadius: BorderRadius.circular(10),
                                             color: primaryColor
                                         ),
-                                        child:  Text("save", style: TextStyle(
+                                        child:  Text(getTranslated(context, "Confirm"), style: TextStyle(
                                           color: whiteColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,),),

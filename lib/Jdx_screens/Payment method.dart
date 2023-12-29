@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dash/flutter_dash.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -10,20 +12,23 @@ import 'package:job_dekho_app/Views/payment_success_screen.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import '../Helper/session.dart';
 import '../Utils/api_path.dart';
 import '../Utils/color.dart';
 import 'MyProfile.dart';
+import 'PickPort/booking_Confirm.dart';
+import 'notification_Screen.dart';
 
-class PaymentMethod extends StatefulWidget {
+class PaymentMethod1 extends StatefulWidget {
   final orderid;
   final totalAmount;
-  const PaymentMethod({Key? key, this.orderid, this.totalAmount}) : super(key: key);
+  const PaymentMethod1({Key? key, this.orderid, this.totalAmount}) : super(key: key);
 
   @override
-  State<PaymentMethod> createState() => _PaymentMethodState();
+  State<PaymentMethod1> createState() => _PaymentMethod1State();
 }
 
-class _PaymentMethodState extends State<PaymentMethod> {
+class _PaymentMethod1State extends State<PaymentMethod1> {
 
   paymentType(String type) async{
     isLoading = true;
@@ -92,125 +97,219 @@ class _PaymentMethodState extends State<PaymentMethod> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: (){
-            Get.back();
-          },
-          child: Icon(Icons.arrow_back),
-          // child: Image.asset('assets/ProfileAssets/menu_icon.png', scale: 1.6,),
-        ),
-        elevation: 0,
-        backgroundColor: primaryColor,
-        title: const Text("Payment Method",style: TextStyle(fontFamily: 'Lora')),
-        centerTitle: true,
-        // actions: [
-        //   Padding(
-        //     padding:  EdgeInsets.only(right: 10),
-        //     child: InkWell(
-        //         onTap: (){
-        //           Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen()));
-        //         },
-        //         child: Icon(Icons.notifications,color: Colors.white,)),
-        //   )
-        // ],
-      ),
-      body: SingleChildScrollView(
-          child:  Column(
-              children: [
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemCount: paymentTypeList.length,
-                    itemBuilder: (c,i){
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 0),
-                        child: InkWell(
-
-                          onTap: (){
-                            print('___________${paymentTypeList[i].type}__________');
-                            final value = double.parse(walletHistoryModel?.wallet ?? '0.0') ;
-
-                            if(paymentTypeList[i].type.toString() == "Wallet") {
-                          if (value >= widget.totalAmount) {
-                            paymentType(paymentTypeList[i].type ??'');
-
-                          }else {
-                            Fluttertoast.showToast(msg: " you have not enough balance in your wallet for the order");
-                          }
-                        }else if(paymentTypeList[i].type.toString() == "Cash On Payment"){
-
-                              paymentType(paymentTypeList[i].type ??'');
-
-                            }else{
-                              openCheckout();
-                              Fluttertoast.showToast(msg: paymentTypeList[i].type ?? 'online');
-                            }
-
-
-
-                            //
-                            //
-                            // Get.to(ParceldetailsScreen());
+      backgroundColor: primaryColor,
+      body: Column(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20,right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(100)
+                        ),
+                        child: Center(child: Icon(Icons.arrow_back)),
+                      ),
+                    ),
+                    Text(getTranslated(context, "Review Booking"),style: TextStyle(color: whiteColor),),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration:  BoxDecoration(
+                          color: splashcolor,
+                          borderRadius:
+                          BorderRadius.circular(100)),
+                      child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                    const NotificationScreen()));
                           },
-                          child: Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
+                          child: Center(
+                            child: Image.asset(
+                              'assets/ProfileAssets/support.png',scale: 1.3,
                             ),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                              decoration: BoxDecoration(
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 11,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: backGround,
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                ),
+                child: Container(
+                  child: Column(
+                    children: [
+                      ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          itemCount: paymentTypeList.length,
+                          itemBuilder: (c,i){
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 0),
+                              child: InkWell(
+
+                                  onTap: (){
+                                    print('___________${paymentTypeList[i].type}__________');
+                                    final value = double.parse(walletHistoryModel?.wallet ?? '0.0') ;
+
+                                    if(paymentTypeList[i].type.toString() == "Wallet") {
+                                      if (value >= widget.totalAmount) {
+                                        paymentType(paymentTypeList[i].type ??'');
+
+                                      }else {
+                                        Fluttertoast.showToast(msg: " you have not enough balance in your wallet for the order");
+                                      }
+                                    }else if(paymentTypeList[i].type.toString() == "Cash On Payment"){
+
+                                      paymentType(paymentTypeList[i].type ??'');
+
+                                    }else{
+                                      openCheckout();
+                                      Fluttertoast.showToast(msg: paymentTypeList[i].type ?? 'online');
+                                    }
+
+
+
+                                    //
+                                    //
+                                    // Get.to(ParceldetailsScreen());
+                                  },
+                                  child: Card(
+                                      elevation: 4,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10)
+                                      ),
+                                      child: Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundImage: AssetImage(paymentTypeList[i].image?? ''),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Dash(
+                                                      direction: Axis.vertical,
+                                                      length: 50,
+                                                      dashLength: 2,
+                                                      dashColor: primaryColor),
+                                                  Padding(
+                                                      padding: const EdgeInsets.all(10.0),
+                                                      child: Text(
+                                                          paymentTypeList[i].type ?? 'null',
+                                                          style: const TextStyle(fontSize: 17,fontWeight: FontWeight.w500))),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  // mainAxisSize: MainAxisSize.max,
+                                                  children: [
+                                                    Container(
+                                                        height: 50,width: 50,
+                                                        decoration: BoxDecoration(
+                                                            color: backGround,
+                                                            borderRadius: BorderRadius.circular(100)
+                                                        ),
+                                                        child: Center(child: Image.asset("assets/DrawerAssets/forwardIcon.png", color: primaryColor,)))
+                                                  ]),
+
+                                            ],
+                                          )))),
+                            );
+                          }),
+                      SizedBox(height: 80,),
+                      InkWell(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>BookingConfirmScreen()));
+
+                          },
+                          child: Container(
+                            height: 50,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width / 1.1,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                      backgroundImage: AssetImage(paymentTypeList[i].image?? ''),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(
-                                        paymentTypeList[i].type ?? 'null',
-                                      style: const TextStyle(fontSize: 17,fontWeight: FontWeight.w500))),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Image.asset("assets/DrawerAssets/forwardIcon.png", color: primaryColor,)
-                                    ]),
-                                  // Column(
-                                  //   mainAxisAlignment: MainAxisAlignment.start,
-                                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                                  //   children: [
-                                  //     Text("Order ID",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
-                                  //     Text("${parcelhistory!.data![i].orderId}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 16,fontFamily: 'Lora'),),
-                                  //
-                                  //     // Text("202",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
-                                  //     Text("Total Amount",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
-                                  //     Text("${parcelhistory!.data![i].orderAmount}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 16,fontFamily: 'Lora'),),
-                                  //   ],
-                                  // ),
-                                  // Column(
-                                  //   mainAxisAlignment: MainAxisAlignment.start,
-                                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                                  //   children: [
-                                  //     Text("Parcel Count",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
-                                  //     Text("${parcelhistory!.data![i].userId}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 16,fontFamily: 'Lora'),),
-                                  //     Text("Order Date",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
-                                  //     Text("${parcelhistory!.data![i].onDate}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 16,fontFamily: 'Lora'),),
-                                  //
-                                  //
-                                  //   ],)
-                                ],
-                              )))),
-                      );
-                    }),
-                isLoading ? const Center(child: CircularProgressIndicator(),) : SizedBox()],
-          )),
+                                color: primaryColor
+                            ),
+                            child:  Text("Done", style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,),),
+                          )),
+
+                      // Column(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     Text("Order ID",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
+                      //     Text("${parcelhistory!.data![i].orderId}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 16,fontFamily: 'Lora'),),
+                      //
+                      //     // Text("202",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
+                      //     Text("Total Amount",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
+                      //     Text("${parcelhistory!.data![i].orderAmount}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 16,fontFamily: 'Lora'),),
+                      //   ],
+                      // ),
+                      // Column(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     Text("Parcel Count",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
+                      //     Text("${parcelhistory!.data![i].userId}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 16,fontFamily: 'Lora'),),
+                      //     Text("Order Date",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
+                      //     Text("${parcelhistory!.data![i].onDate}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 16,fontFamily: 'Lora'),),
+                      //
+                      //
+                      //   ],)
+                    ],
+                  )
+
+
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Column(
+                //     // shrinkWrap: true,
+                //     // physics: const ScrollPhysics(),
+                //     children: [
+                //
+                //      // isLoading ? const Center(child: CircularProgressIndicator(),) : SizedBox()
+                //     ],
+                //   ),
+                // ),
+              ),
+            )
+
+
+
+          ],
+      ),
     );
   }
 

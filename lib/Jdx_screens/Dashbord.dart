@@ -5,7 +5,7 @@ import 'package:job_dekho_app/Helper/session.dart';
 
 import '../Utils/color.dart';
 import 'HomeScreen.dart';
-import 'RegisterParcel.dart';
+import 'PickPort/RegisterParcel.dart';
 import 'MyProfile.dart';
 import 'order_screen.dart';
 
@@ -89,12 +89,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               items: [
                 CurvedNavigationBarItem(
                     child: Icon(Icons.dashboard,color: Colors.white,),
-                    label:getTranslated(context, "HOME"),
+                    label:getTranslated(context, "Home"),
                     labelStyle: TextStyle(color: Colors.white)
                 ),
                 CurvedNavigationBarItem(
                     child: Icon(Icons.task_alt,color: Colors.white,),
-                    label: getTranslated(context, "orders"),
+                    label: getTranslated(context, "Orders"),
                     labelStyle: TextStyle(color: Colors.white)
                 ),
                 CurvedNavigationBarItem(

@@ -1,9 +1,9 @@
 
 // class ApiPath{
 //
-//   static const String baseUrl ="https://developmentalphawizz.com/JDX/api/";
-//   static const String imgUrl = 'https://developmentalphawizz.com/JDX/api/';
-//   static const String imgUrl1 = 'https://developmentalphawizz.com/JDX/api/Authentication/profile_pics/';
+//   static const String baseUrl ="https://developmentalphawizz.com/pickport/api/";
+//   static const String imgUrl = 'https://developmentalphawizz.com/pickport/api/';
+//   static const String imgUrl1 = 'https://developmentalphawizz.com/pickport/api/Authentication/profile_pics/';
 //
 //   static const String login = baseUrl +'Authentication/login';
 //   static const String registration = baseUrl +'Authentication/ragistration';
@@ -22,8 +22,8 @@
 
 class ApiPath{
 
-  static const String baseUrl ="https://developmentalphawizz.com/JDX/api/";
-  static const String imgUrl = 'https://developmentalphawizz.com/JDX/';
+  static const String baseUrl ="https://developmentalphawizz.com/pickport/api/";
+  static const String imgUrl = 'https://developmentalphawizz.com/pickport/';
   static const String imgUrl1 = 'https://developmentalphawizz.com/';
 
   static const String login = baseUrl +'Authentication/login';

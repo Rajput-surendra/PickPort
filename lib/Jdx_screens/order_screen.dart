@@ -525,7 +525,7 @@ class _OrderHistrryState extends State<OrderHistrry> {
   }
 
   cancelOrder(String orderId, int i) async{
-    var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/JDX/api/Authentication/update_parcel_status'));
+    var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/pickport/api/Authentication/update_parcel_status'));
     request.fields.addAll({
       'user_id': userid ?? '315',
       'order_id': orderId,

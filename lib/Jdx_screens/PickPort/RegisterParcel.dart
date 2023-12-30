@@ -393,8 +393,8 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                         );
                                       },
                                       textInputAction: TextInputAction.next,
-                                      decoration: InputDecoration(
-                                        border: const OutlineInputBorder(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(
                                             borderSide: BorderSide.none
                                         ),
                                         //hintText: "Sender Address",

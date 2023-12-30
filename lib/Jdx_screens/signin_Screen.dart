@@ -163,6 +163,7 @@ import 'package:http/http.dart' as http;
 import '../Utils/api_path.dart';
 import '../Utils/color.dart';
 import 'Dashbord.dart';
+import 'PickPort/otp_verify_Screen.dart';
 import 'signup_Screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -180,7 +181,7 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
   String? token;
 
   getToken() async {
@@ -229,7 +230,7 @@ class _SignInScreenState extends State<SignInScreen> {
         });
         Fluttertoast.showToast(msg: "${jsonResponse['message']}");
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => MyStatefulWidget()));
+            MaterialPageRoute(builder: (context) => const MyStatefulWidget()));
       } else {
         Fluttertoast.showToast(msg: "${jsonResponse['message']}");
         setState(() {
@@ -245,6 +246,56 @@ class _SignInScreenState extends State<SignInScreen> {
       print(jsonResponse.toString());
       Fluttertoast.showToast(msg: "${jsonResponse['message']}");
     }
+  }
+  String? mobileOtp,mobileNo;
+  bool isLoading =  false;
+  loginWithMobileNumberApi() async {
+    setState(() {
+      isLoading = true;
+    });
+    var headers = {
+      'Cookie': 'ci_session=c59791396657a1155df9f32cc7d7b547a40d648c'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/login'));
+    request.fields.addAll({
+     'mobile':mobileController.text
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var result =   await response.stream.bytesToString();
+      var finalResult =  jsonDecode(result);
+      mobileOtp =  finalResult['data']['otp'];
+      mobileNo =  finalResult['data']['user_phone'];
+      print('____Som______${mobileOtp}_________');
+      setState(() {
+        isLoading = false;
+      });
+      setState(() {
+        Fluttertoast.showToast(msg: "${finalResult['message']}");
+      });
+      if(finalResult['status'] == false){
+        Fluttertoast.showToast(msg: "${finalResult['message']}");
+      }else{
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>VerrifyScreen(mobile: mobileNo,otp: mobileOtp,)));
+        setState(() {
+          isLoading = false;
+        });
+      }
+      // Navigator.push(context, MaterialPa
+      // geRoute(builder: (context)=>))
+
+
+    }
+    else {
+      setState(() {
+        setState(() {
+          isLoading = false;
+        });
+      });
+      print(response.reasonPhrase);
+    }
+
   }
 
   int _value = 1;
@@ -264,16 +315,16 @@ class _SignInScreenState extends State<SignInScreen> {
           //the return value will be from "Yes" or "No" options
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(
+            title: const Text(
               'Exit App',
               style: TextStyle(fontFamily: 'Lora'),
             ),
-            content: Text('Do you want to exit an App?'),
+            content: const Text('Do you want to exit an App?'),
             actions: [
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(false),
                 //return false when click on "NO"
-                child: Text(
+                child: const Text(
                   'No',
                   style: TextStyle(fontFamily: 'Lora'),
                 ),
@@ -285,7 +336,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   // Navigator.pop(context,true);
                 },
                 //return true when click on "Yes"
-                child: Text(
+                child: const Text(
                   'Yes',
                   style: TextStyle(fontFamily: 'Lora'),
                 ),
@@ -316,7 +367,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           horizontal: 15, vertical: 15),
                       child: Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 15,
                           ),
                           Row(
@@ -340,7 +391,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 15,
                           ),
                           Text(
@@ -358,12 +409,12 @@ class _SignInScreenState extends State<SignInScreen> {
                     decoration: BoxDecoration(
                         color: backGround,
                         borderRadius:
-                            BorderRadius.only(topRight: Radius.circular(50))),
+                            const BorderRadius.only(topRight: Radius.circular(50))),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 50,
                         ),
                         Row(
@@ -385,7 +436,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                             Text(
                               getTranslated(context, "email"),
-                              style: TextStyle(fontSize: 21),
+                              style: const TextStyle(fontSize: 21),
                             ),
                             const SizedBox(
                               height: 10,
@@ -405,7 +456,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             // SizedBox(width: 10.0,),
                             Text(
                               getTranslated(context, "mobile"),
-                              style: TextStyle(fontSize: 21),
+                              style: const TextStyle(fontSize: 21),
                             ),
                           ],
                         ),
@@ -413,157 +464,162 @@ class _SignInScreenState extends State<SignInScreen> {
                             ? Column(children: [
                                 /// email login section
                                 Container(
-                                  child: Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Material(
-                                        elevation: 3,
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width/1.1,
-                                          height: 50,
-                                          child: TextField(
-                                            controller: emailController,
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.only(top: 8),
-                                              border: const OutlineInputBorder(
-                                                  borderSide: BorderSide.none),
-                                              hintText: getTranslated(context, "Entre_Email"),
-                                              prefixIcon: Image.asset(
-                                                'assets/AuthAssets/Icon material-email.png',
-                                                scale: 1.4,
-                                                color: Secondry,
-                                              ),
-                                            ),
-                                          ),
+                                  child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Material(
-                                        elevation: 3,
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              1.1,
-                                          height: 50,
-                                          child: TextField(
-                                            obscureText: isVisible ? false : true,
-                                            controller: passwordController,
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.only(top: 8),
-                                              border: OutlineInputBorder(
-                                                  borderSide: BorderSide.none),
-                                              hintText: getTranslated(
-                                                  context, "Password"),
-                                              prefixIcon: Image.asset(
-                                                'assets/AuthAssets/Icon ionic-ios-lock.png',
-                                                scale: 1.3,
-                                                color: Secondry,
-                                              ),
-                                              suffixIcon: IconButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    isVisible ? isVisible = false : isVisible = true;
-                                                  });
-                                                },
-                                                icon: Icon(
-                                                  isVisible
-                                                      ? Icons.remove_red_eye
-                                                      : Icons.visibility_off,
-                                                  color: Colors.green,
+                                        Material(
+                                          elevation: 3,
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width/1.1,
+                                            height: 50,
+                                            child: TextField(
+                                              controller: emailController,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.only(top: 8),
+                                                border: const OutlineInputBorder(
+                                                    borderSide: BorderSide.none),
+                                                hintText: getTranslated(context, "Entre_Email"),
+                                                prefixIcon: Image.asset(
+                                                  'assets/AuthAssets/Icon material-email.png',
+                                                  scale: 1.4,
+                                                  color: Secondry,
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Get.to(Forget());
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Align(
-                                              alignment: Alignment.centerRight,
-                                              child: Text(
-                                                  getTranslated(
-                                                      context, "Forgot_pass"),
-                                                  style: TextStyle(
-                                                    color: Secondry,
-                                                    fontWeight: FontWeight.bold,
-                                                  ))),
+                                        const SizedBox(
+                                          height: 20,
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 50,
-                                      ),
-                                      // CustomTextButton(buttonText: 'Sign In', onTap: (){
-                                      //   emailPasswordLogin();
-                                      //   // Navigator.push(context, MaterialPageRoute(builder: (context)=> SeekerDrawerScreen()));
-                                      // }),
-                                      InkWell(
-                                        onTap: () {
-                                          // Navigator.push(context, MaterialPageRoute(builder:(context)=> MyStatefulWidget()));
-                                          setState(() {
-                                            isloader = true;
-                                          });
-                                          emailPasswordLogin();
-                                        },
-                                        child: Container(
-                                          height: 50,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              1.1,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: primaryColor,
-                                          ),
-                                          child: isloader == true
-                                              ? const Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: Colors.white,
+                                        Material(
+                                          elevation: 3,
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                1.1,
+                                            height: 50,
+                                            child: TextField(
+                                              obscureText: isVisible ? false : true,
+                                              controller: passwordController,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    const EdgeInsets.only(top: 8),
+                                                border: const OutlineInputBorder(
+                                                    borderSide: BorderSide.none),
+                                                hintText: getTranslated(
+                                                    context, "Password"),
+                                                prefixIcon: Image.asset(
+                                                  'assets/AuthAssets/Icon ionic-ios-lock.png',
+                                                  scale: 1.3,
+                                                  color: Secondry,
+                                                ),
+                                                suffixIcon: IconButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      isVisible ? isVisible = false : isVisible = true;
+                                                    });
+                                                  },
+                                                  icon: Icon(
+                                                    isVisible
+                                                        ? Icons.remove_red_eye
+                                                        : Icons.visibility_off,
+                                                    color: Colors.green,
                                                   ),
-                                                )
-                                              : Text(
-                                                  getTranslated(
-                                                      context, "LOGIN"),
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: whiteColor),
                                                 ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.to(const Forget());
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Align(
+                                                alignment: Alignment.centerRight,
+                                                child: Text(
+                                                    getTranslated(
+                                                        context, "Forgot_pass"),
+                                                    style: TextStyle(
+                                                      color: Secondry,
+                                                      fontWeight: FontWeight.bold,
+                                                    ))),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 50,
+                                        ),
+                                        // CustomTextButton(buttonText: 'Sign In', onTap: (){
+                                        //   emailPasswordLogin();
+                                        //   // Navigator.push(context, MaterialPageRoute(builder: (context)=> SeekerDrawerScreen()));
+                                        // }),
+                                        InkWell(
+                                          onTap: () {
+                                            // Navigator.push(context, MaterialPageRoute(builder:(context)=> MyStatefulWidget()));
+                                            setState(() {
+                                              isloader = true;
+                                            });
+                                            emailPasswordLogin();
+                                          },
+                                          child: Container(
+                                            height: 50,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                1.1,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: primaryColor,
+                                            ),
+                                            child: isloader == true
+                                                ? const Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    getTranslated(
+                                                        context, "LOGIN"),
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: whiteColor),
+                                                  ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ])
-                            : SizedBox.shrink(),
-                        SizedBox(height: 30,),
+                            : const SizedBox.shrink(),
+                        const SizedBox(height: 30,),
                         isMobile == true
                             ? Column(
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  child: Container(
+                                  child:
+                                  Container(
                                     child: Padding(
                                       padding: const EdgeInsets.only(right: 20),
                                       child: InternationalPhoneNumberInput(
@@ -579,18 +635,16 @@ class _SignInScreenState extends State<SignInScreen> {
                                     elevation: 3,
                                     borderRadius: BorderRadius.circular(10),
                                     child: Container(
-                                      width: MediaQuery.of(context)
-                                          .size
-                                          .width /
-                                          1.1,
+
                                       height: 50,
                                       child: TextField(
+                                        maxLength: 10,
                                         keyboardType: TextInputType.number,
                                         controller: mobileController,
                                         decoration: InputDecoration(
-                                          contentPadding:
-                                          EdgeInsets.only(top: 8),
-                                          border: OutlineInputBorder(
+                                          counterText: "",
+                                          contentPadding: const EdgeInsets.only(top: 10,left: 5),
+                                          border: const OutlineInputBorder(
                                               borderSide: BorderSide.none),
                                           hintText: getTranslated(
                                               context, "ENTER_MOBILE"),
@@ -601,15 +655,21 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                               ],
                             ),
-                         
-                            SizedBox(height: 50,),
+
+                            const SizedBox(height: 50,),
                             InkWell(
-                              onTap: () {
-                                // Navigator.push(context, MaterialPageRoute(builder:(context)=> MyStatefulWidget()));
-                                setState(() {
-                                  isloader = true;
+                              onTap: (){
+                                setState((){
+                                  isLoading = true;
                                 });
-                                emailPasswordLogin();
+                                if(mobileController.text.isNotEmpty && mobileController.text.length == 10){
+                                  loginWithMobileNumberApi();
+                                }else{
+                                  setState((){
+                                    isLoading = false;
+                                  });
+                                  Fluttertoast.showToast(msg: "Please enter valid mobile number!",);
+                                }
                               },
                               child: Container(
                                 height: 50,
@@ -623,16 +683,14 @@ class _SignInScreenState extends State<SignInScreen> {
                                   BorderRadius.circular(10),
                                   color: primaryColor,
                                 ),
-                                child: isloader == true
+                                child: isLoading == true
                                     ? const Center(
                                   child:
                                   CircularProgressIndicator(
                                     color: Colors.white,
                                   ),
                                 )
-                                    : Text(
-                                  getTranslated(
-                                      context, "getOtp"),
+                                    : Text( getTranslated(context, "Send Otp"),
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight:
@@ -643,7 +701,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                           ],
                         )
-                            : SizedBox.shrink(),
+                            : const SizedBox.shrink(),
                         const SizedBox(
                           height: 20,
                         ),
@@ -656,14 +714,14 @@ class _SignInScreenState extends State<SignInScreen> {
             bottomSheet: Container(
               color: backGround,
               child: Padding(
-                padding:  EdgeInsets.only(bottom: 10),
+                padding:  const EdgeInsets.only(bottom: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     Text(getTranslated(context, "Don't have an account?"), style: TextStyle(fontWeight: FontWeight.bold),),
+                     Text(getTranslated(context, "Don't have an account?"), style: const TextStyle(fontWeight: FontWeight.bold),),
                     GestureDetector(
                       onTap: () {
-                        Get.to(SignUpScreen());
+                        Get.to(const SignUpScreen());
                       },
                       child: Text(getTranslated(context, "Sign Up"),
                         style: TextStyle(
@@ -677,6 +735,6 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
-  String _selectedCountryCode = '+1'; // Default country code
+  String _selectedCountryCode = '+91'; // Default country code
 
 }

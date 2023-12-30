@@ -22,7 +22,7 @@ final TextStyle buttonTextStyle = TextStyle(fontSize: 18,fontWeight: FontWeight.
 class CustomColors {
   static const Color primaryColor = Color(0xFF6200EE);
   static const Color secondaryColor = Color(0xFF03DAC6);
-  static const Color accentColor = Color(0xFF0F368C);
+  static const Color accentColor = Color(0xFF66CC00);
   static const Color TransparentColor= Color(0xFFFFFFFF);
   static const Color White= Color(0xFFffffff);
   static const Color LightblueColor= Color(0xFF222443);

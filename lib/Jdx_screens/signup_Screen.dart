@@ -1400,10 +1400,15 @@ import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:job_dekho_app/Helper/session.dart';
+import 'package:job_dekho_app/Jdx_screens/privacypolicy_Screen.dart';
 import 'package:job_dekho_app/Jdx_screens/signin_Screen.dart';
+import 'package:job_dekho_app/Jdx_screens/termsandcondition_Screen.dart';
 
+import '../Helper/PickModel/get_city_model.dart';
+import '../Helper/PickModel/get_status_model.dart';
 import '../Model/animal_cat_model_response.dart';
 import '../Utils/Color.dart';
+import '../Utils/api_path.dart';
 import 'Dashbord.dart';
 
 
@@ -1424,49 +1429,68 @@ class _SignUpScreen extends State<SignUpScreen> {
   TextEditingController passController = TextEditingController();
   TextEditingController cPassController = TextEditingController();
   TextEditingController referalController = TextEditingController();
-  TextEditingController VhicleController = TextEditingController();
-  TextEditingController VhicletypeController = TextEditingController();
-  TextEditingController LicenceController = TextEditingController();
-  TextEditingController aadharController = TextEditingController();
+  TextEditingController gstController = TextEditingController();
+  TextEditingController gstAddressController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   double? lat;
   double? long;
-
-  getNewSignUp() async {
-    var headers = {
-      'Cookie': 'ci_session=cd3c13dc5a076f38e4c94afe64948ac08bf8b17c'
-    };
-    var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            'https://developmentalphawizz.com/pickport/api/Authentication/deliveryBoyRegistration'));
-    request.fields.addAll({
-      'user_fullname':
-      '210                                                                         ',
-      'user_email': 'test11@gmail.com',
-      'user_password': '12345678',
-      'user_phone': '6879889798',
-      'firebaseToken': '4',
-      'aadhaar_card_no': '6486',
-      'vehicle_type': '9+',
-      'vehicle_no': '7',
-      'driving_licence_no': '7',
-      'account_holder_name': '5',
-      'account_number': '7',
-      'ifsc_code': '4',
-      'user_image': '',
-      'driving_licence_photo': ''
+  bool isLoading =  false;
+  signUpApi() async {
+    setState(() {
+      isLoading = true;
     });
-
+    var headers = {
+      'Cookie': 'ci_session=c59791396657a1155df9f32cc7d7b547a40d648c'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/registration'));
+    request.fields.addAll({
+      'user_fullname':nameController.text,
+      'user_phone':mobController.text,
+      'user_email':emailController.text,
+      'user_state':stateId.toString(),
+      'user_city':cityId.toString(),
+      'user_password':passController.text,
+      'referral_code':referalController.text,
+      'gst_type':_value.toString(),
+      'gst_number':gstController.text,
+      'gst_address':gstAddressController.text,
+      'firebaseToken': ''
+    });
+     print('____Som______${ request.fields}_________');
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-    } else {
+     var result =   await response.stream.bytesToString();
+     var finalResult =  jsonDecode(result);
+     setState(() {
+       Fluttertoast.showToast(msg: "${finalResult['message']}");
+     });
+     if(finalResult['status'] == false){
+       Fluttertoast.showToast(msg: "${finalResult['message']}");
+     }else{
+       Navigator.pop(context);
+       setState(() {
+         isLoading = false;
+       });
+     }
+    // Navigator.push(context, MaterialPa
+      // geRoute(builder: (context)=>))
+
+
+    }
+    else {
+      setState(() {
+        setState(() {
+          isLoading = false;
+        });
+      });
       print(response.reasonPhrase);
     }
+
   }
 
   // signUpApi() async {
@@ -1527,6 +1551,74 @@ class _SignUpScreen extends State<SignUpScreen> {
   //     print(response.reasonPhrase);
   //   }
   // }
+
+
+
+  String? stateId;
+  GetCityList? getCityList;
+  GetStatusModel? getStatusModel;
+  getStateApi() async {
+    var headers = {
+      'Cookie': 'ci_session=72caa85cedaa1a0d8ccc629445189f73af6a9946'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/api_get_state'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      var result = await response.stream.bytesToString();
+      var finalResult =  GetStatusModel.fromJson(json.decode(result));
+      setState(() {
+        getStatusModel =  finalResult;
+      });
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+
+  }
+
+
+
+  String? cityId;
+  GetStateList? getStateList;
+  GetCityModel? getCityModel;
+  getCityApi( String stateId) async {
+    setState(() {
+      isLoading = true;
+    });
+    var headers = {
+      'Cookie': 'ci_session=c59791396657a1155df9f32cc7d7b547a40d648c'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/api_get_city'));
+    request.fields.addAll({
+      'state_id':stateId.toString()
+    });
+
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var result = await response.stream.bytesToString();
+      var finalResult =  GetCityModel.fromJson(json.decode(result));
+      setState(() {
+        getCityModel = finalResult;
+      });
+      setState(() {
+       // Fluttertoast.showToast(msg: "${finalResult['message']}");
+      });
+    }
+    else {
+      setState(() {
+        setState(() {
+          isLoading = false;
+        });
+      });
+      print(response.reasonPhrase);
+    }
+
+  }
 
   final ImagePicker _picker = ImagePicker();
   File? imageFile;
@@ -1596,13 +1688,15 @@ class _SignUpScreen extends State<SignUpScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCityApi();
+
+    getStateApi();
     //inIt();
   }
   bool isVisible = false;
+  bool isVisible1 = false;
   bool isTerm = false;
   int  selected =  0;
-  int _value = 1;
+  int _value = 0;
   bool isNonAvailable = false;
   bool isAvailable = false;
   inIt() async {
@@ -1617,7 +1711,7 @@ class _SignUpScreen extends State<SignUpScreen> {
         key: _formKey,
         child: Column(
           children: [
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
             Expanded(
               flex: 2,
               child: Container(
@@ -1634,7 +1728,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          getTranslated(context, "signUp"),
+                          getTranslated(context, "Sign Up"),
                           style: const TextStyle(
                               fontSize: 24,
                               color: Colors.white,
@@ -1668,11 +1762,11 @@ class _SignUpScreen extends State<SignUpScreen> {
             Expanded(
               flex: 8,
               child: Container(
-                padding:  EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+                padding:  const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: backGround,
-                  borderRadius:  BorderRadius.only(
+                  borderRadius:  const BorderRadius.only(
                       topRight: Radius.circular(50)),
                 ),
                 child: SingleChildScrollView(
@@ -1693,14 +1787,14 @@ class _SignUpScreen extends State<SignUpScreen> {
                             controller: nameController,
                             keyboardType: TextInputType.name,
                             decoration:  InputDecoration(
-                              prefixIcon: Padding(
-                                padding: const EdgeInsets.only(top: 15),
+                              prefixIcon: const Padding(
+                                padding: EdgeInsets.only(top: 15),
                                 child: Icon(
                                   Icons.person,
                                   color: CustomColors.accentColor,
                                 ),
                               ),
-                              contentPadding: EdgeInsets.only(top: 20, left: 5),
+                              contentPadding: const EdgeInsets.only(top: 20, left: 5),
                               border: InputBorder.none,
                               hintText: getTranslated(context, "Name"),
                             ),
@@ -1731,14 +1825,14 @@ class _SignUpScreen extends State<SignUpScreen> {
                             keyboardType: TextInputType.phone,
                             decoration:  InputDecoration(
                               counterText: "",
-                              prefixIcon: Padding(
+                              prefixIcon: const Padding(
                                 padding: EdgeInsets.only(top: 15),
                                 child: Icon(
                                   Icons.call,
                                   color: CustomColors.accentColor,
                                 ),
                               ),
-                              contentPadding: EdgeInsets.only(top: 18, left: 5),
+                              contentPadding: const EdgeInsets.only(top: 18, left: 5),
                               border: InputBorder.none,
                               hintText: getTranslated(context, "ENTER_MOBILE"),
                             ),
@@ -1770,14 +1864,14 @@ class _SignUpScreen extends State<SignUpScreen> {
                             controller: emailController,
                             keyboardType: TextInputType.emailAddress,
                             decoration:  InputDecoration(
-                              prefixIcon: Padding(
+                              prefixIcon: const Padding(
                                 padding: EdgeInsets.only(top: 15),
                                 child: Icon(
                                   Icons.email,
                                   color: CustomColors.accentColor,
                                 ),
                               ),
-                              contentPadding: EdgeInsets.only(top: 18, left: 5),
+                              contentPadding: const EdgeInsets.only(top: 18, left: 5),
                               border: InputBorder.none,
                               hintText: getTranslated(context, "Entre_Email"),
                             ),
@@ -1806,22 +1900,23 @@ class _SignUpScreen extends State<SignUpScreen> {
                                 color: CustomColors.TransparentColor),
                             child: Row(
                               children: [
-                                Expanded(
+                                const Expanded(
                                     flex: 1,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 13),
+                                      padding: EdgeInsets.only(left: 13),
                                       child: Icon(Icons.location_city,color: CustomColors.accentColor,),
                                     )),
                                 Expanded(
                                   flex: 10,
                                   child: DropdownButtonHideUnderline(
-                                    child: DropdownButton2<AnimalCatList>(
+                                    child: DropdownButton2<GetCityList>(
                                       isExpanded: true,
                                       hint:  Text(getTranslated(context, "State"),
                                         style: const TextStyle(
-                                          color: Colors.black54,fontWeight: FontWeight.w500,
+                                            color: Colors.black54,fontWeight: FontWeight.w500,fontSize: 18
+
                                         ),),
-                                      value: animalCat,
+                                      value: getCityList,
 
                                       // icon:  Icon(Icons.keyboard_arrow_down_rounded,  color:Secondry,size: 25,),
                                       style:   TextStyle(color: Secondry,fontWeight: FontWeight.bold),
@@ -1833,14 +1928,15 @@ class _SignUpScreen extends State<SignUpScreen> {
                                           color:whiteColor,
                                         ),
                                       ),
-                                      onChanged: (AnimalCatList? value) {
+                                      onChanged: (GetCityList? value) {
                                         setState(() {
-                                          animalCat = value!;
-                                          catId =  animalCat?.id;
+                                          getCityList = value!;
+                                          stateId =  getCityList?.stateId;
+                                          getCityApi(stateId!);
                                           //animalCountApi(animalCat!.id);
                                         });
                                       },
-                                      items: animalCatResponse?.data?.map((items) {
+                                      items: getStatusModel?.data?.map((items) {
                                         return DropdownMenuItem(
                                           value: items,
                                           child:  Column(
@@ -1853,7 +1949,7 @@ class _SignUpScreen extends State<SignUpScreen> {
 
                                                     child: Padding(
                                                       padding: const EdgeInsets.only(top: 0),
-                                                      child: Text(items.name.toString(),overflow:TextOverflow.ellipsis,style: const TextStyle(color:Colors.black),),
+                                                      child: Text(items.stateName.toString(),overflow:TextOverflow.ellipsis,style: const TextStyle(color:Colors.black),),
                                                     )),
                                               ),
 
@@ -1884,22 +1980,22 @@ class _SignUpScreen extends State<SignUpScreen> {
                               color: CustomColors.TransparentColor),
                           child: Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 flex: 1,
                                   child: Padding(
-                                    padding: const EdgeInsets.only(left: 13),
+                                    padding: EdgeInsets.only(left: 13),
                                     child: Icon(Icons.location_city,color: CustomColors.accentColor,),
                                   )),
                               Expanded(
                                 flex: 10,
                                 child: DropdownButtonHideUnderline(
-                                  child: DropdownButton2<AnimalCatList>(
+                                  child: DropdownButton2<GetStateList>(
                                     isExpanded: true,
                                     hint:  Text(getTranslated(context, "City"),
-                                      style: const TextStyle(
-                                        color: Colors.black54,fontWeight: FontWeight.w500,
+                                      style:  const TextStyle(
+                                        color: Colors.black54,fontWeight: FontWeight.w500,fontSize: 18
                                       ),),
-                                    value: animalCat,
+                                    value: getStateList,
 
                                     // icon:  Icon(Icons.keyboard_arrow_down_rounded,  color:Secondry,size: 25,),
                                     style:   TextStyle(color: Secondry,fontWeight: FontWeight.bold),
@@ -1911,14 +2007,14 @@ class _SignUpScreen extends State<SignUpScreen> {
                                         color:whiteColor,
                                       ),
                                     ),
-                                    onChanged: (AnimalCatList? value) {
+                                    onChanged: (GetStateList? value) {
                                       setState(() {
-                                        animalCat = value!;
-                                        catId =  animalCat?.id;
+                                        getStateList = value!;
+                                        cityId =  getStateList?.cityId;
                                         //animalCountApi(animalCat!.id);
                                       });
                                     },
-                                    items: animalCatResponse?.data?.map((items) {
+                                    items: getCityModel?.data?.map((items) {
                                       return DropdownMenuItem(
                                         value: items,
                                         child:  Column(
@@ -1931,7 +2027,7 @@ class _SignUpScreen extends State<SignUpScreen> {
 
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(top: 0),
-                                                    child: Text(items.name.toString(),overflow:TextOverflow.ellipsis,style: const TextStyle(color:Colors.black),),
+                                                    child: Text(items.cityName.toString(),overflow:TextOverflow.ellipsis,style: const TextStyle(color:Colors.black),),
                                                   )),
                                             ),
 
@@ -1954,20 +2050,18 @@ class _SignUpScreen extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(10),
                           //set border radius more than 50% of height and width to make circle
                         ),
-                        elevation: 1,
                         child: Container(
-                          width: MediaQuery.of(context)
-                              .size
-                              .width /
-                              1.1,
                           height: 60,
-                          child: TextField(
-                            obscureText: isVisible ? false : true,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: CustomColors.TransparentColor),
+                          child: TextFormField(
                             controller: passController,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               contentPadding:
                               EdgeInsets.only(top: 8),
-                              border: OutlineInputBorder(
+                              border:  OutlineInputBorder(
                                   borderSide: BorderSide.none),
                               hintText: getTranslated(
                                   context, "Password"),
@@ -1989,7 +2083,14 @@ class _SignUpScreen extends State<SignUpScreen> {
                                   color: Colors.green,
                                 ),
                               ),
+
                             ),
+                            validator: (v) {
+                              if (v!.isEmpty) {
+                                return "Password is required";
+                              }
+                            },
+
                           ),
                         ),
                       ),
@@ -2001,23 +2102,21 @@ class _SignUpScreen extends State<SignUpScreen> {
                           borderRadius: BorderRadius.circular(10),
                           //set border radius more than 50% of height and width to make circle
                         ),
-                        elevation: 1,
                         child: Container(
-                          width: MediaQuery.of(context)
-                              .size
-                              .width /
-                              1.1,
                           height: 60,
-                          child: TextField(
-                            obscureText: isVisible ? false : true,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: CustomColors.TransparentColor),
+                          child: TextFormField(
                             controller: cPassController,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               contentPadding:
                               EdgeInsets.only(top: 8),
-                              border: OutlineInputBorder(
+                              border:  OutlineInputBorder(
                                   borderSide: BorderSide.none),
                               hintText: getTranslated(
-                                  context, "confirmPassword"),
+                                  context, "Confirm Password"),
                               prefixIcon: Image.asset(
                                 'assets/AuthAssets/Icon ionic-ios-lock.png',
                                 scale: 1.3,
@@ -2026,17 +2125,27 @@ class _SignUpScreen extends State<SignUpScreen> {
                               suffixIcon: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    isVisible ? isVisible = false : isVisible = true;
+                                    isVisible1 ? isVisible1 = false : isVisible1 = true;
                                   });
                                 },
                                 icon: Icon(
-                                  isVisible
+                                  isVisible1
                                       ? Icons.remove_red_eye
                                       : Icons.visibility_off,
                                   color: Colors.green,
                                 ),
                               ),
+
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please confirm your password';
+                              } else if (value != passController.text) {
+                                return 'Passwords do not match';
+                              }
+                              return null;
+                            },
+
                           ),
                         ),
                       ),
@@ -2055,7 +2164,6 @@ class _SignUpScreen extends State<SignUpScreen> {
                               color: CustomColors.TransparentColor),
                           child: TextFormField(
                             controller: referalController,
-                            obscureText: true,
                             decoration:  InputDecoration(
                               prefixIcon: const Padding(
                                 padding: EdgeInsets.only(top: 10),
@@ -2064,15 +2172,11 @@ class _SignUpScreen extends State<SignUpScreen> {
                                   color: CustomColors.accentColor,
                                 ),
                               ),
-                              contentPadding: EdgeInsets.only(top: 22, left: 5),
+                              contentPadding: const EdgeInsets.only(top: 22, left: 5),
                               border: InputBorder.none,
                               hintText: getTranslated(context, "Referral Code (Optional"),
                             ),
-                            validator: (v) {
-                              if (v!.isEmpty) {
-                                return "Referral Code(Optional) is required";
-                              }
-                            },
+
                           ),
                         ),
                       ),
@@ -2083,7 +2187,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                       Row(
                         children: [
                           Radio(
-                            value: 1,
+                            value: 0,
                             fillColor: MaterialStateColor.resolveWith(
                                     (states) => Secondry),
                             activeColor: Secondry,
@@ -2097,13 +2201,13 @@ class _SignUpScreen extends State<SignUpScreen> {
                           ),
                           Text(
                             getTranslated(context, "Non Available Available"),
-                            style: TextStyle(fontSize: 15),
+                            style: const TextStyle(fontSize: 15),
                           ),
                           const SizedBox(
                             height: 5,
                           ),
                           Radio(
-                              value: 2,
+                              value: 1,
                               fillColor: MaterialStateColor.resolveWith(
                                       (states) => Secondry),
                               activeColor: Secondry,
@@ -2117,10 +2221,73 @@ class _SignUpScreen extends State<SignUpScreen> {
                           // SizedBox(width: 10.0,),
                           Text(
                             getTranslated(context, "Available"),
-                            style: TextStyle(fontSize: 15),
+                            style: const TextStyle(fontSize: 15),
                           ),
                         ],
                       ),
+
+                      isAvailable == true ?  Row(
+                        children: [
+                          Expanded(
+                            child: Card(
+                              elevation: 1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Container(
+                                height: 60,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: CustomColors.TransparentColor),
+                                child: TextFormField(
+                                  controller: gstController,
+                                  keyboardType: TextInputType.number,
+                                  decoration:  InputDecoration(
+
+                                    contentPadding: const EdgeInsets.only(top: 20, left: 5),
+                                    border: InputBorder.none,
+                                    hintText: getTranslated(context, "GST Number"),
+                                  ),
+                                  validator: (v) {
+                                    if (v!.isEmpty) {
+                                      return "GST Number is required";
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Card(
+                              elevation: 1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Container(
+                                height: 60,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: CustomColors.TransparentColor),
+                                child: TextFormField(
+                                  controller: gstAddressController,
+                                  keyboardType: TextInputType.name,
+                                  decoration:  InputDecoration(
+
+                                    contentPadding: const EdgeInsets.only(top: 20, left: 5),
+                                    border: InputBorder.none,
+                                    hintText: getTranslated(context, "GST Address"),
+                                  ),
+                                  validator: (v) {
+                                    if (v!.isEmpty) {
+                                      return "GST Address is required";
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ):SizedBox.shrink(),
                       selected == 0
                           ? Container(
                         child: Row(children: [
@@ -2137,26 +2304,36 @@ class _SignUpScreen extends State<SignUpScreen> {
                               color: Secondry,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
-                          Text(
+                          const Text(
                             'I agree to all ',
                             style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
                           ),
-                          Text(
-                            getTranslated(context, "Terms and Conditions"),
-                            style:TextStyle(fontSize:12,fontWeight: FontWeight.bold, color: primaryColor,),
+                          InkWell(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>TermsAndConditionScreen()));
+                            },
+                            child: Text(
+                              getTranslated(context, "Terms and Conditions"),
+                              style:TextStyle(fontSize:12,fontWeight: FontWeight.bold, color: primaryColor,),
+                            ),
                           ),
-                          SizedBox(width: 2,),
-                          Text(
+                          const SizedBox(width: 5,),
+                          const Text(
                             'and ',
                             style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(width: 2,),
-                          Text(
-                            getTranslated(context, "Privacy Policy"),
-                            style: TextStyle(fontSize:12,fontWeight:FontWeight.bold, color:primaryColor,),
+                          const SizedBox(width: 2,),
+                          InkWell(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>PrivacyPolicyScreen()));
+                            },
+                            child: Text(
+                              getTranslated(context, "Privacy Policy"),
+                              style: TextStyle(fontSize:12,fontWeight:FontWeight.bold, color:primaryColor,),
+                            ),
                           ),
                         ]),
                       )
@@ -2166,7 +2343,18 @@ class _SignUpScreen extends State<SignUpScreen> {
                       ),
                       InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>MyStatefulWidget()));
+                          if(_formKey.currentState!.validate()){
+
+                            signUpApi();
+
+                          }else if(stateId== null || cityId == null){
+                            Fluttertoast.showToast(msg: "please select state and city");
+                          }else if(isTerm== null ){
+                            Fluttertoast.showToast(msg: "please select i agree");
+                          }else{
+                          Fluttertoast.showToast(msg: "All Field is ");
+                          }
+                         // Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyStatefulWidget()));
                         },
                         child: Container(
                             decoration: BoxDecoration(
@@ -2175,15 +2363,14 @@ class _SignUpScreen extends State<SignUpScreen> {
                             height: 60,
                             width: MediaQuery.of(context).size.width,
                             child:  Center(
-                              child: Text(
-                                getTranslated(context, "signUp"),
-                                style: TextStyle(color: Colors.white),
+                              child: Text(isLoading == true ? getTranslated(context, "Please Wait") :getTranslated(context, "Sign Up"),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             )),
                       ),
                       Row(
                         children: [
-                           Text(getTranslated(context, "Already have an accounting"),style: TextStyle(
+                           Text(getTranslated(context, "Already have an accounting"),style: const TextStyle(
                              fontSize: 12
                            ),),
                           TextButton(
@@ -2191,10 +2378,10 @@ class _SignUpScreen extends State<SignUpScreen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => SignInScreen()));
+                                        builder: (context) => const SignInScreen()));
                               },
                               child: Text(
-                                getTranslated(context, "LogIn"),
+                                getTranslated(context, "LOGIN"),
                                 style: TextStyle(color: Secondry,fontSize: 14),
                               ))
                         ],
@@ -2216,29 +2403,4 @@ class _SignUpScreen extends State<SignUpScreen> {
 
 
 
-  String? catId;
-  AnimalCatList? animalCat;
-  AnimalCatResponse? animalCatResponse;
-  getCityApi() async {
-    var headers = {
-      'Cookie': 'ci_session=72caa85cedaa1a0d8ccc629445189f73af6a9946'
-    };
-    var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/goat_farm/app/v1/api/animal_category'));
-
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      var result = await response.stream.bytesToString();
-      var finalResult =  AnimalCatResponse.fromJson(json.decode(result));
-      setState(() {
-        animalCatResponse =  finalResult;
-      });
-    }
-    else {
-    print(response.reasonPhrase);
-    }
-
-  }
 }

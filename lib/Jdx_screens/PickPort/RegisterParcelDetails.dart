@@ -11,6 +11,7 @@ import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:job_dekho_app/Jdx_screens/Dashbord.dart';
 import 'package:job_dekho_app/Jdx_screens/Editrecipentcart.dart';
+import 'package:job_dekho_app/Jdx_screens/HomeScreen.dart';
 import 'package:job_dekho_app/Jdx_screens/parceldetailsscreen.dart';
 //import 'package:place_picker/entities/location_result.dart';
 //import 'package:place_picker/widgets/place_picker.dart';
@@ -20,45 +21,53 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../Helper/session.dart';
 import '../../Model/MaterialCategoryModel.dart';
 import '../../Model/ParcelWeightModel.dart';
+import '../../Model/getprofilemodel.dart';
 import '../../Model/registerparcelmodel.dart';
 import '../../Utils/api_path.dart';
 import '../../Utils/color.dart';
 import '../notification_Screen.dart';
 
 class RegisterParcelDetails extends StatefulWidget {
-   RegisterParcelDetails({Key? key,this.dropLocation,this.picLocation}) : super(key: key);
+   RegisterParcelDetails({Key? key,this.dropLocation,this.picLocation,this.lat1,this.long1,this.lat2,this.long2}) : super(key: key);
    String ? dropLocation,picLocation;
+   double? lat1 = 0.0;
+   double? long1 = 0.0;
+   double? lat2 = 0.0;
+   double? long2 = 0.0;
   @override
   State<RegisterParcelDetails> createState() => _RegisterParcelDetailsState();
 }
 
 class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
-  TextEditingController senderNameController = TextEditingController();
-  TextEditingController picUpController = TextEditingController();
-  TextEditingController picTimeController = TextEditingController();
+  // TextEditingController senderNameController = TextEditingController();
+
+  //
+  // TextEditingController recipientAddressCtr = TextEditingController();
+  // TextEditingController recipientnewAddressCtr = TextEditingController();
+  // TextEditingController senderAddressCtr = TextEditingController();
+  // TextEditingController nameC = TextEditingController();
+  // TextEditingController senderfulladdressCtr = TextEditingController();
+
+  // TextEditingController pincodeC = TextEditingController();
+  // TextEditingController cityC = TextEditingController();
+  // TextEditingController valueController = TextEditingController();
+  //
+  // // TextEditingController addressC = TextEditingController();
+  // TextEditingController receiverfulladdressCtr = TextEditingController();
+  //
+  // TextEditingController stateC = TextEditingController();
+  // TextEditingController countryC = TextEditingController();
+  // TextEditingController latitudeC = TextEditingController();
+  // TextEditingController longitudeC = TextEditingController();
+
+   TextEditingController recipientMobileController = TextEditingController();
   TextEditingController senderMobileController = TextEditingController();
-  TextEditingController recipientAddressCtr = TextEditingController();
-  TextEditingController recipientnewAddressCtr = TextEditingController();
-  TextEditingController senderAddressCtr = TextEditingController();
-  TextEditingController nameC = TextEditingController();
-  TextEditingController senderfulladdressCtr = TextEditingController();
-  TextEditingController recipientMobileController = TextEditingController();
-  TextEditingController pincodeC = TextEditingController();
-  TextEditingController cityC = TextEditingController();
-  TextEditingController valueController = TextEditingController();
-
-  // TextEditingController addressC = TextEditingController();
-  TextEditingController receiverfulladdressCtr = TextEditingController();
   TextEditingController recipientNameController = TextEditingController();
-  TextEditingController stateC = TextEditingController();
-  TextEditingController countryC = TextEditingController();
-  TextEditingController latitudeC = TextEditingController();
-  TextEditingController longitudeC = TextEditingController();
+   TextEditingController picUpController = TextEditingController();
+   TextEditingController picTimeController = TextEditingController();
+   TextEditingController homeController = TextEditingController();
 
-  double lat1 = 0.0;
-  double long1 = 0.0;
-  double lat2 = 0.0;
-  double long2 = 0.0;
+
 
   // String radioButtonItem = 'ONE';
   int id = 0;
@@ -68,25 +77,62 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
  List receiverList = [];
 
   // List<String>  selectedvalue = [];
-
+   String? userName,userMobile;
+  // Getprofilemodel? getprofile;
+  // getuserProfile() async{
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   String? userid = preferences.getString("userid");
+  //   var headers = {
+  //     'Cookie': 'ci_session=9aba5e78ffa799cbe054723c796d2bd8f2f7d120'
+  //   };
+  //   var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}User_Dashboard/getUserProfile'));
+  //   request.fields.addAll({
+  //     'user_id': userid.toString()
+  //   });
+  //
+  //   request.headers.addAll(headers);
+  //   http.StreamedResponse response = await request.send();
+  //   if (response.statusCode == 200) {
+  //     var finalResult = await response.stream.bytesToString();
+  //     final jsonResponse = Getprofilemodel.fromJson(json.decode(finalResult));
+  //     setState(() {
+  //       getprofile = jsonResponse;
+  //       userName = getprofile!.data!.first.firstname.toString();
+  //       userMobile = getprofile!.data!.first.firstname.toString();
+  //       print('____Som______${userName}_________');
+  //     });
+  //   }
+  //   else {
+  //     print(response.reasonPhrase);
+  //   }
+  //
+  // }
+  bool isLoading =  false;
   senParcel() async {
    if(receiverList.isEmpty){
      receiverList.add(
          {"meterial_category": "${selectedValue.toString()}",
-           "parcel_weight": "${selectedValue1.toString()}",
-           "receiver_address": "${recipientAddressCtr.text}",
-           "receiver_latitude": "${lat2}",
-           "receiver_longitude": "${long2}",
+          // "parcel_weight": "${selectedValue1.toString()}",
+           "parcel_weight": "",
+           "receiver_address": "${widget.dropLocation.toString()}",
+           "receiver_latitude": "${widget.lat2}",
+           "receiver_longitude": "${widget.long2}",
            "receiver_name": "${recipientNameController.text}",
            "receiver_phone": "${recipientMobileController.text}",
-           "reciver_full_address": "${receiverfulladdressCtr.text}",
-           "pacel_value" : "${valueController.text}"
+           "reciver_full_address": "${homeController.text}",
+           "booking_type":"${_value}",
+           "booking_date":_value == 0 ? date.toString(): picUpController.text,
+           "booking_time": _value == 0 ? time.toString():picTimeController.text,
+           "pacel_value" : ""
          });
    }
 
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userid = prefs.getString('userid');
+      userName = prefs.getString('name');
+      userMobile = prefs.getString('phone');
+      print('____Som___ffff___${userMobile}_________');
     String? orderid = prefs.getString("orderid");
 
     print("User Id ${userid.toString()}");
@@ -98,13 +144,13 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
     };
     var request = http.Request(
         'POST', Uri.parse('${ApiPath.baseUrl}payment/send_parcel'));
-    request.body = json.encode({
-      "sender_name": senderNameController.text,
-      "sender_address": senderAddressCtr.text,
-      "sender_phone": senderMobileController.text,
-      "sender_latitude": lat1.toString(),
-      "sender_longitude": long1.toString(),
-      "sender_fulladdress": senderfulladdressCtr.text,
+     request.body = json.encode({
+      "sender_name":userName.toString(),
+      "sender_address":widget.picLocation.toString(),
+      "sender_phone":userMobile.toString(),
+      "sender_latitude": widget.lat1 == null ? latSender :"${widget.lat1}",
+      "sender_longitude": widget.long1 == null ? longSender :"${widget.long1}",
+      "sender_fulladdress":widget.picLocation.toString(),
       "user_id": "${userid}",
       "data_arr": receiverList,
     });
@@ -122,18 +168,26 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
       print("Result here Now@@@@@@ ${finalResult.toString()}");
       // print("Result Noww@@@@@@ ${finalResult}");
       setState(() {
+        isLoading = false;
         parcelDetailsModel = jsonResponse;
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ParceldetailsScreen(orderid: orderid, isFromParcelHistory: false,)));
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => ParceldetailsScreen(orderid: orderid, isFromParcelHistory: false,)));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>SelcetVhicle(dropLocation: widget.dropLocation,picLocation: widget.picLocation,senderName: userName,senderMobile: userMobile,
+          receiverName: recipientNameController.text,receiverMobile: recipientMobileController.text
+        )));
       });
     }
     else {
+      setState(() {
+        isLoading = false;
+      });
       print(response.reasonPhrase);
     }
   }
 
   MaterialCategoryModel? materialCategoryModel;
   materialCategory() async {
+    print('____Som_____sdsdsds_________');
     var headers = {
       'Cookie': 'ci_session=18b59dc18c8193fd4e5e1c025a6904983b2ca7e4'
     };
@@ -188,12 +242,15 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(milliseconds: 100), () {
-      return materialCategory();
-    });
-    Future.delayed(Duration(milliseconds: 100), () {
-      return parcelWeight();
-    });
+    materialCategory();
+    // Future.delayed(Duration(milliseconds: 100), () {
+    //   return
+    //
+    // });
+
+    // Future.delayed(Duration(milliseconds: 100), () {
+    //   return parcelWeight();
+    // });
     _getCompensationAmmount();
 
   }
@@ -204,14 +261,19 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
   String? amt;
   double?  lat;
   double?  long;
-  int _value = 1;
+  int _value = 0;
   bool isCurrent = false;
   bool isSchedule = false;
   String? selectedFromDate;
+   String? date ,time;
+
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
     String formattedDateTime = "${now.year}-${now.month}-${now.day} ${now.hour}:${now.minute}:${now.second}";
+    date =  formattedDateTime.substring(0,11);
+    time =  formattedDateTime.substring(11,16);
+    print('____Som______${date}____${time}_____');
     // Data data = materialCategoryModel!.data![0].title;
     return Scaffold(
       backgroundColor: primaryColor,
@@ -505,11 +567,11 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
                                       child: TextFormField(
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
-                                            return 'Enter Recipent Name';
+                                            return 'House/ Apartment';
                                           }
                                           return null;
                                         },
-                                        controller: recipientNameController,
+                                        controller: homeController,
                                         decoration: const InputDecoration(
                                           border: OutlineInputBorder(
                                               borderSide: BorderSide.none
@@ -632,7 +694,7 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
                                   Row(
                                     children: [
                                       Radio(
-                                        value: 1,
+                                        value: 0,
                                         fillColor: MaterialStateColor.resolveWith(
                                                 (states) => Secondry),
                                         activeColor: Secondry,
@@ -652,7 +714,7 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
                                         height: 5,
                                       ),
                                       Radio(
-                                          value: 2,
+                                          value: 1,
                                           fillColor: MaterialStateColor.resolveWith(
                                                   (states) => Secondry),
                                           activeColor: Secondry,
@@ -844,7 +906,9 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
                                   SizedBox(height: 20,),
                                   InkWell(
                                       onTap: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SelcetVhicle(dropLocation: widget.dropLocation,picLocation: widget.picLocation,)));
+                                        setState(() {
+
+                                        });
                                         if(receiverList.isEmpty) {
                                           if (_formKey.currentState!.validate()) {
                                            senParcel();
@@ -866,7 +930,15 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
                                             borderRadius: BorderRadius.circular(10),
                                             color: primaryColor
                                         ),
-                                        child:  Text(getTranslated(context, "Confirm"), style: TextStyle(
+                                        child: isLoading == true
+                                            ? const Center(
+                                          child:
+                                          CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                            :
+                                        Text(getTranslated(context, "Confirm"), style: TextStyle(
                                           color: whiteColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,),),

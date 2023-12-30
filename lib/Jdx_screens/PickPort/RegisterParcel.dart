@@ -32,30 +32,30 @@ class RegistParcelScreen extends StatefulWidget {
 }
 
 class _RegistParcelScreenState extends State<RegistParcelScreen> {
-  TextEditingController senderNameController = TextEditingController();
-  TextEditingController senderMobileController = TextEditingController();
-  TextEditingController recipientAddressCtr = TextEditingController();
-  TextEditingController recipientnewAddressCtr = TextEditingController();
-  TextEditingController senderAddressCtr = TextEditingController();
-  TextEditingController nameC = TextEditingController();
-  TextEditingController senderfulladdressCtr = TextEditingController();
-  TextEditingController recipientMobileController = TextEditingController();
-  TextEditingController pincodeC = TextEditingController();
-  TextEditingController cityC = TextEditingController();
-  TextEditingController valueController = TextEditingController();
+  // TextEditingController senderNameController = TextEditingController();
+  // TextEditingController senderMobileController = TextEditingController();
+   TextEditingController recipientAddressCtr = TextEditingController();
+  // TextEditingController recipientnewAddressCtr = TextEditingController();
+    TextEditingController senderAddressCtr = TextEditingController();
+  // TextEditingController nameC = TextEditingController();
+  // TextEditingController senderfulladdressCtr = TextEditingController();
+  // TextEditingController recipientMobileController = TextEditingController();
+  // TextEditingController pincodeC = TextEditingController();
+  // TextEditingController cityC = TextEditingController();
+  // TextEditingController valueController = TextEditingController();
+  //
+  // // TextEditingController addressC = TextEditingController();
+  // TextEditingController receiverfulladdressCtr = TextEditingController();
+  // TextEditingController recipientNameController = TextEditingController();
+  // TextEditingController stateC = TextEditingController();
+  // TextEditingController countryC = TextEditingController();
+  // TextEditingController latitudeC = TextEditingController();
+  // TextEditingController longitudeC = TextEditingController();
 
-  // TextEditingController addressC = TextEditingController();
-  TextEditingController receiverfulladdressCtr = TextEditingController();
-  TextEditingController recipientNameController = TextEditingController();
-  TextEditingController stateC = TextEditingController();
-  TextEditingController countryC = TextEditingController();
-  TextEditingController latitudeC = TextEditingController();
-  TextEditingController longitudeC = TextEditingController();
-
-  double lat1 = 0.0;
-  double long1 = 0.0;
-  double lat2 = 0.0;
-  double long2 = 0.0;
+  // double lat1 = 0.0;
+  // double long1 = 0.0;
+  // double lat2 = 0.0;
+  // double long2 = 0.0;
 
   // String radioButtonItem = 'ONE';
   int id = 0;
@@ -66,119 +66,70 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
 
   // List<String>  selectedvalue = [];
 
-  senParcel() async {
-   if(receiverList.isEmpty){
-     receiverList.add(
-         {"meterial_category": "${selectedValue.toString()}",
-           "parcel_weight": "${selectedValue1.toString()}",
-           "receiver_address": "${recipientAddressCtr.text}",
-           "receiver_latitude": "${lat2}",
-           "receiver_longitude": "${long2}",
-           "receiver_name": "${recipientNameController.text}",
-           "receiver_phone": "${recipientMobileController.text}",
-           "reciver_full_address": "${receiverfulladdressCtr.text}",
-           "pacel_value" : "${valueController.text}"
-         });
-   }
+  // senParcel() async {
+  //  if(receiverList.isEmpty){
+  //    receiverList.add(
+  //        {"meterial_category": "${selectedValue.toString()}",
+  //          "parcel_weight": "${selectedValue1.toString()}",
+  //          "receiver_address": "${recipientAddressCtr.text}",
+  //          "receiver_latitude": "${lat2}",
+  //          "receiver_longitude": "${long2}",
+  //          "receiver_name": "${recipientNameController.text}",
+  //          "receiver_phone": "${recipientMobileController.text}",
+  //          "reciver_full_address": "${receiverfulladdressCtr.text}",
+  //          "pacel_value" : "${valueController.text}"
+  //        });
+  //  }
+  //
+  //
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? userid = prefs.getString('userid');
+  //   String? orderid = prefs.getString("orderid");
+  //
+  //   print("User Id ${userid.toString()}");
+  //   // print("this is my order id>>>>>>>>>>>>>>${orderid}");
+  //   print("Register and Sender Parcel");
+  //   var headers = {
+  //     'Content-Type': 'application/json',
+  //     'Cookie': 'ci_session=1b21f643064e1ac4622693b37863ecfa449561dd',
+  //   };
+  //   var request = http.Request(
+  //       'POST', Uri.parse('${ApiPath.baseUrl}payment/send_parcel'));
+  //   request.body = json.encode({
+  //     "sender_name": senderNameController.text,
+  //     "sender_address": senderAddressCtr.text,
+  //     "sender_phone": senderMobileController.text,
+  //     "sender_latitude": lat1.toString(),
+  //     "sender_longitude": long1.toString(),
+  //     "sender_fulladdress": senderfulladdressCtr.text,
+  //     "user_id": "${userid}",
+  //     "data_arr": receiverList,
+  //   });
+  //   print("This is request here>>>>>>>>${request.body}");
+  //   request.headers.addAll(headers);
+  //   http.StreamedResponse response = await request.send();
+  //   if (response.statusCode == 200) {
+  //     print("Working Now Here");
+  //     var finalResult = await response.stream.bytesToString();
+  //     final jsonResponse = Registerparcelmodel.fromJson(json.decode(finalResult));
+  //     String orderid = jsonResponse.orderId.toString();
+  //     prefs.setString('orderid', orderid.toString());
+  //     print("thiss is order id=========>${orderid}");
+  //     // String? orderid = preferences.getString("orderid");
+  //     print("Result here Now@@@@@@ ${finalResult.toString()}");
+  //     // print("Result Noww@@@@@@ ${finalResult}");
+  //     setState(() {
+  //       parcelDetailsModel = jsonResponse;
+  //       Navigator.push(context,
+  //           MaterialPageRoute(builder: (context) => ParceldetailsScreen(orderid: orderid, isFromParcelHistory: false,)));
+  //     });
+  //   }
+  //   else {
+  //     print(response.reasonPhrase);
+  //   }
+  // }
 
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userid = prefs.getString('userid');
-    String? orderid = prefs.getString("orderid");
-
-    print("User Id ${userid.toString()}");
-    // print("this is my order id>>>>>>>>>>>>>>${orderid}");
-    print("Register and Sender Parcel");
-    var headers = {
-      'Content-Type': 'application/json',
-      'Cookie': 'ci_session=1b21f643064e1ac4622693b37863ecfa449561dd',
-    };
-    var request = http.Request(
-        'POST', Uri.parse('${ApiPath.baseUrl}payment/send_parcel'));
-    request.body = json.encode({
-      "sender_name": senderNameController.text,
-      "sender_address": senderAddressCtr.text,
-      "sender_phone": senderMobileController.text,
-      "sender_latitude": lat1.toString(),
-      "sender_longitude": long1.toString(),
-      "sender_fulladdress": senderfulladdressCtr.text,
-      "user_id": "${userid}",
-      "data_arr": receiverList,
-    });
-    print("This is request here>>>>>>>>${request.body}");
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      print("Working Now Here");
-      var finalResult = await response.stream.bytesToString();
-      final jsonResponse = Registerparcelmodel.fromJson(json.decode(finalResult));
-      String orderid = jsonResponse.orderId.toString();
-      prefs.setString('orderid', orderid.toString());
-      print("thiss is order id=========>${orderid}");
-      // String? orderid = preferences.getString("orderid");
-      print("Result here Now@@@@@@ ${finalResult.toString()}");
-      // print("Result Noww@@@@@@ ${finalResult}");
-      setState(() {
-        parcelDetailsModel = jsonResponse;
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ParceldetailsScreen(orderid: orderid, isFromParcelHistory: false,)));
-      });
-    }
-    else {
-      print(response.reasonPhrase);
-    }
-  }
-
-  MaterialCategoryModel? materialCategoryModel;
-  materialCategory() async {
-    var headers = {
-      'Cookie': 'ci_session=18b59dc18c8193fd4e5e1c025a6904983b2ca7e4'
-    };
-    var request = http.MultipartRequest(
-        'GET', Uri.parse('${ApiPath.baseUrl}Products/Category'));
-
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      print("Material category");
-      var finalResult = await response.stream.bytesToString();
-      final jsonResponse = MaterialCategoryModel.fromJson(
-          json.decode(finalResult));
-      print("final Result>>>>>>> ${finalResult.toString()}");
-      setState(() {
-        materialCategoryModel = jsonResponse;
-      });
-    }
-    else {
-      print(response.reasonPhrase);
-    }
-  }
-
-
-  ParcelWeightModel? parcelWeightModel;
-
-  parcelWeight() async {
-    var headers = {
-      'Cookie': 'ci_session=18b59dc18c8193fd4e5e1c025a6904983b2ca7e4'
-    };
-    var request = http.MultipartRequest(
-        'GET', Uri.parse('${ApiPath.baseUrl}Products/getweight'));
-
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      var finalResult = await response.stream.bytesToString();
-      final jsonResponse = ParcelWeightModel.fromJson(json.decode(finalResult));
-      print("final Result>>>>>>> ${finalResult.toString()}");
-      setState(() {
-        parcelWeightModel = jsonResponse;
-      });
-    }
-    else {
-      print("Enterrrrrrrrrr");
-      print(response.reasonPhrase);
-    }
-  }
 
 
   @override
@@ -186,12 +137,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
     // TODO: implement initState
     super.initState();
     senderAddressCtr.text  =  addressC.text;
-    Future.delayed(Duration(milliseconds: 100), () {
-      return materialCategory();
-    });
-    Future.delayed(Duration(milliseconds: 100), () {
-      return parcelWeight();
-    });
+
     _getCompensationAmmount();
 
   }
@@ -200,8 +146,10 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
   String? selectedValue;
   String? selectedValue1;
   String? amt;
-  double?  lat;
-  double?  long;
+  double? latSender;
+  double? longSender;
+  double? latReceiver;
+  double? longReceiver;
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +186,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
         padding: const EdgeInsets.only(left: 20,bottom: 20,right: 20),
         child: InkWell(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterParcelDetails(dropLocation: recipientAddressCtr.text,picLocation: senderAddressCtr.text,)));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterParcelDetails(dropLocation: recipientAddressCtr.text,picLocation: senderAddressCtr.text,lat1: latSender,long1: longSender,lat2: latReceiver,long2: longReceiver,)));
           },
           child: Container(
               decoration: BoxDecoration(
@@ -380,8 +328,8 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                 setState(() {
                                                   senderAddressCtr.text =
                                                       result.formattedAddress.toString();
-                                                  lat1 = result.geometry!.location.lat;
-                                                  long1 = result.geometry!.location.lng;
+                                                  latSender = result.geometry!.location.lat;
+                                                  longSender = result.geometry!.location.lng;
                                                 });
                                                 Navigator.of(context).pop();
                                               },
@@ -453,8 +401,8 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                 setState(() {
                                                   recipientAddressCtr.text =
                                                       result.formattedAddress.toString();
-                                                  lat2 = result.geometry!.location.lat;
-                                                  long2 = result.geometry!.location.lng;
+                                                  latReceiver = result.geometry!.location.lat;
+                                                  longReceiver = result.geometry!.location.lng;
                                                 });
                                                 Navigator.of(context).pop();
                                               },

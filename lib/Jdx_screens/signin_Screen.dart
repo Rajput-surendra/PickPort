@@ -219,9 +219,12 @@ class _SignInScreenState extends State<SignInScreen> {
         String userid = jsonResponse['data']['user_id'];
         String email = jsonResponse['data']['user_email'];
         String phone = jsonResponse['data']['user_phone'];
+        String name = jsonResponse['data']['user_fullname'];
+
         prefs.setString('userid', userid.toString());
         prefs.setString('email', email.toString());
         prefs.setString('phone', phone.toString());
+        prefs.setString('name', name.toString());
 
         print('__________${prefs.getString('phone')}_____________');
         setState(() {

@@ -27,8 +27,8 @@ import '../../Utils/color.dart';
 import '../notification_Screen.dart';
 
 class SelcetVhicle extends StatefulWidget {
-  SelcetVhicle({Key? key,this.dropLocation,this.picLocation}) : super(key: key);
-   String ? dropLocation,picLocation;
+  SelcetVhicle({Key? key,this.dropLocation,this.picLocation,this.senderName,this.senderMobile,this.receiverName,this.receiverMobile}) : super(key: key);
+   String ? dropLocation,picLocation,senderName,senderMobile,receiverName,receiverMobile;
   @override
   State<SelcetVhicle> createState() => _SelcetVhicleState();
 }
@@ -148,6 +148,13 @@ class _SelcetVhicleState extends State<SelcetVhicle> {
                                            Text(getTranslated(context, "Pickup Location"),style: TextStyle(
                                              fontSize: 15, color: primaryColor
                                            ),),
+                                           Row(
+                                             children: [
+                                               Text("${widget.senderName}",overflow: TextOverflow.ellipsis,maxLines: 1,),
+                                               SizedBox(width: 5,),
+                                               Text("${widget.senderMobile}",overflow: TextOverflow.ellipsis,maxLines: 1,),
+                                             ],
+                                           ),
                                            Container(
                                                width: 280,
                                                child: Text("${widget.picLocation}",overflow: TextOverflow.ellipsis,maxLines: 1,)),
@@ -181,6 +188,17 @@ class _SelcetVhicleState extends State<SelcetVhicle> {
                                             Text(getTranslated(context, "Drop Location"),style: TextStyle(
                                                 fontSize: 15, color: primaryColor
                                             ),),
+
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 5),
+                                              child: Row(
+                                                children: [
+                                                  Text("${widget.receiverName}",overflow: TextOverflow.ellipsis,maxLines: 1,),
+                                                  SizedBox(width: 5,),
+                                                  Text("${widget.receiverMobile}",overflow: TextOverflow.ellipsis,maxLines: 1,),
+                                                ],
+                                              ),
+                                            ),
                                             Container(
                                                 width: 280,
                                                 child: Text("${widget.dropLocation}",overflow: TextOverflow.ellipsis,maxLines: 1,)),

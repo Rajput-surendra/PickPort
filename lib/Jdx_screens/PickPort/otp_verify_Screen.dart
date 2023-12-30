@@ -42,24 +42,32 @@ class _VerrifyScreenState extends State<VerrifyScreen> {
       'otp': widget.otp.toString(),
       'firebaseToken':token.toString()
     });
+    print('____Som______${request.fields}_________');
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalresponse = await response.stream.bytesToString();
       final jsonresponse = json.decode(finalresponse);
-      if (jsonresponse['error'] == true){
+      if (jsonresponse['status'] == true){
+        print('____Status______${jsonresponse['status']}_________');
         String userid = jsonresponse['data']['user_id'];
         String email = jsonresponse['data']['user_email'];
         String phone = jsonresponse['data']['user_phone'];
+        String name = jsonresponse['data']['user_fullname'];
         prefs.setString('userid', userid.toString());
         prefs.setString('email', email.toString());
         prefs.setString('phone', phone.toString());
+        prefs.setString('name', name.toString());
         Fluttertoast.showToast(msg: '${jsonresponse['message']}',);
-
+        print('____Som___lll___${name}_________');
+     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyStatefulWidget()));
+        setState(() {
+          isLoading =  false;
+        });
       }
       else{
         Fluttertoast.showToast(msg: "${jsonresponse['message']}",);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyStatefulWidget()));
+       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyStatefulWidget()));
         setState(() {
           isLoading =  false;
         });
@@ -73,6 +81,56 @@ class _VerrifyScreenState extends State<VerrifyScreen> {
       print(response.reasonPhrase);
     }
   }
+
+
+   String? mobileOtp,mobileNo;
+   resendOtp() async {
+     setState(() {
+       isLoading = true;
+     });
+     var headers = {
+       'Cookie': 'ci_session=c59791396657a1155df9f32cc7d7b547a40d648c'
+     };
+     var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/login'));
+     request.fields.addAll({
+       'mobile':widget.mobile.toString()
+     });
+     request.headers.addAll(headers);
+     http.StreamedResponse response = await request.send();
+     if (response.statusCode == 200) {
+       var result =   await response.stream.bytesToString();
+       var finalResult =  jsonDecode(result);
+      widget.otp =  mobileOtp =  finalResult['data']['otp'];
+
+       setState(() {
+         isLoading = false;
+       });
+       setState(() {
+         Fluttertoast.showToast(msg: "${finalResult['message']}");
+       });
+       if(finalResult['status'] == false){
+         Fluttertoast.showToast(msg: "${finalResult['message']}");
+       }else{
+        // Navigator.push(context, MaterialPageRoute(builder: (context)=>VerrifyScreen(mobile: mobileNo,otp: mobileOtp,)));
+         setState(() {
+           isLoading = false;
+         });
+       }
+       // Navigator.push(context, MaterialPa
+       // geRoute(builder: (context)=>))
+
+
+     }
+     else {
+       setState(() {
+         setState(() {
+           isLoading = false;
+         });
+       });
+       print(response.reasonPhrase);
+     }
+
+   }
   String? newPin ;
   String? token;
   @override
@@ -183,8 +241,7 @@ class _VerrifyScreenState extends State<VerrifyScreen> {
                           const SizedBox(height: 20,),
                            Text(getTranslated(context, "Haven't received the verification code?"),style: TextStyle(color: Colors.black54,fontSize: 16),),
                           InkWell(onTap: (){
-                            //resendSendOtp();
-                            //sendOtp(mobile: controller.data[0].toString());
+                            resendOtp();
                           },
                               child:  Text(getTranslated(context, "Resend"),style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: Colors.black),)),
                           const SizedBox(height: 50,),
@@ -193,7 +250,9 @@ class _VerrifyScreenState extends State<VerrifyScreen> {
                           // )
                           CustomButton1(
                             onTap: (){
-
+                              setState((){
+                                isLoading = true;
+                              });
                                if(newPin != widget.otp){
                                  Fluttertoast.showToast(msg: "Please enter correct pin");
 
@@ -201,6 +260,9 @@ class _VerrifyScreenState extends State<VerrifyScreen> {
                                  Fluttertoast.showToast(msg: "Please enter pin");
                                }
                                else{
+                                 setState((){
+                                   isLoading = false;
+                                 });
                                  verifyOtpApi();
                                }
                             },

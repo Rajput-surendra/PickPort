@@ -58,14 +58,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
     request.fields.addAll({
       'user_id': userid.toString()
     });
-    print("this is userId=========>${request.fields}");
+
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResult = await response.stream.bytesToString();
       final jsonResponse = Getprofilemodel.fromJson(json.decode(finalResult));
-      print("this is userIddddddddddddddd=========>${jsonResponse}");
-      print("this is userIbbbbbbbbbbbbbbbbbbbbb=========>${finalResult}");
       setState(() {
         getprofile = jsonResponse;
       });
@@ -220,20 +218,20 @@ class _DrawerScreenState extends State<DrawerScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  InkWell(
-                    onTap: (){
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          color: whiteColor,
-                          borderRadius: BorderRadius.circular(100)
-                      ),
-                      child: Center(child: Icon(Icons.arrow_back)),
-                    ),
-                  ),
+                  // InkWell(
+                  //   onTap: (){
+                  //     Navigator.pop(context);
+                  //   },
+                  //   child: Container(
+                  //     height: 40,
+                  //     width: 40,
+                  //     decoration: BoxDecoration(
+                  //         color: whiteColor,
+                  //         borderRadius: BorderRadius.circular(100)
+                  //     ),
+                  //     child: Center(child: Icon(Icons.arrow_back)),
+                  //   ),
+                  // ),
                   Text(getTranslated(context, "My Account"),style: TextStyle(color: whiteColor),),
                   Container(
                     height: 40,
@@ -274,7 +272,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Row(
-                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -321,8 +319,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                     child: Stack(
                                       children: [
                                         getprofile == null || getprofile == "" || getprofile != null ?  Container(
-                                          width: 100,
-                                          height: 100,
+                                          width: 80,
+                                          height: 80,
                                           decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               color: whiteColor
@@ -365,11 +363,15 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("${getprofile?.data?[0].userFullname}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                                  Text("${getprofile?.data?[0].userEmail}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+
+                                  Container(
+                                    width: 150,
+                                      child: Text("${getprofile?.data?[0].userEmail}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),overflow: TextOverflow.ellipsis,maxLines: 1,)),
+                                  Text("${getprofile?.data?[0].get}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
                                   // Text("Jdx1234@gmail.com",),
                                 ],
                               ),
-                              SizedBox(width: 10,),
+                              SizedBox(width: 40,),
                               InkWell(
                                 onTap: (){
                                   Get.to(UserProfile(

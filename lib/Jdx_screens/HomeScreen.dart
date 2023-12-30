@@ -29,6 +29,7 @@ import 'PickPort/SupportNewScreen.dart';
 import 'notification_Screen.dart';
 import 'signup_Screen.dart';
 String? senderLocation;
+double ?latSender,longSender;
 TextEditingController addressC = TextEditingController();
 
 class HomeScreen extends StatefulWidget {
@@ -203,8 +204,9 @@ class _HomeScreenState extends State<HomeScreen> {
           desiredAccuracy: LocationAccuracy.high);
 
       List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
+        latSender =  position.latitude,
+        longSender=  position.longitude,
+
       );
       Placemark place = placemarks[0];
       setState(() {
@@ -264,8 +266,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         setState(() {
                                           addressC.text =
                                               result.formattedAddress.toString();
-                                          lat = result.geometry!.location.lat;
-                                          long = result.geometry!.location.lng;
+                                          latSender = result.geometry!.location.lat;
+                                          longSender = result.geometry!.location.lng;
                                         });
                                         Navigator.of(context).pop();
                                       },

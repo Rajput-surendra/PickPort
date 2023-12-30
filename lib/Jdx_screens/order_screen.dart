@@ -37,15 +37,6 @@ class _OrderHistrryState extends State<OrderHistrry> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                      color: whiteColor,
-                    borderRadius: BorderRadius.circular(100)
-                  ),
-                  child: Center(child: Icon(Icons.arrow_back)),
-                ),
                   Text(getTranslated(context, "orders"),style: TextStyle(color: whiteColor),),
                   Container(
                     height: 40,

@@ -142,8 +142,10 @@ class Data {
       String? accountHolderName, 
       String? accountNumber, 
       String? ifscCode, 
+      String? gst,
       String? bankName,}){
     _userId = userId;
+      _gst = gst;
     _userType = userType;
     _userPhone = userPhone;
     _firstname = firstname;
@@ -193,6 +195,7 @@ class Data {
 
   Data.fromJson(dynamic json) {
     _userId = json['user_id'];
+    _gst = json['gst_number'];
     _userType = json['user_type'];
     _userPhone = json['user_phone'];
     _firstname = json['firstname'];
@@ -240,6 +243,7 @@ class Data {
     _bankName = json['bank_name'];
   }
   String? _userId;
+  String? _gst;
   String? _userType;
   String? _userPhone;
   String? _firstname;
@@ -285,7 +289,9 @@ class Data {
   String? _accountNumber;
   String? _ifscCode;
   String? _bankName;
-Data copyWith({  String? userId,
+Data copyWith({
+  String? userId,
+  String? gst,
   String? userType,
   String? userPhone,
   String? firstname,
@@ -333,6 +339,7 @@ Data copyWith({  String? userId,
   String? bankName,
 }) => Data(  userId: userId ?? _userId,
   userType: userType ?? _userType,
+  gst: gst ?? _gst,
   userPhone: userPhone ?? _userPhone,
   firstname: firstname ?? _firstname,
   lastname: lastname ?? _lastname,
@@ -379,6 +386,7 @@ Data copyWith({  String? userId,
   bankName: bankName ?? _bankName,
 );
   String? get userId => _userId;
+  String? get get => _gst;
   String? get userType => _userType;
   String? get userPhone => _userPhone;
   String? get firstname => _firstname;
@@ -428,6 +436,7 @@ Data copyWith({  String? userId,
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['user_id'] = _userId;
+    map['gst_number'] = _gst;
     map['user_type'] = _userType;
     map['user_phone'] = _userPhone;
     map['firstname'] = _firstname;

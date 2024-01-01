@@ -327,7 +327,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                           ),
                                           child:getprofile?.data?[0].userImage != null ? ClipRRect(
                                               borderRadius: BorderRadius.circular(100),
-                                              child:Image.network("${getprofile!.data![0].userImage}")) : Image.asset('assets/ProfileAssets/sampleprofile.png'),
+                                              child:Image.network("${getprofile?.data?[0].userImage}")) : Image.asset('assets/ProfileAssets/sampleprofile.png'),
                                         ) :
                                         Container(
                                           width: 100,
@@ -338,7 +338,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                           ),
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(100),
-                                            child:Image.network("${getprofile?.data![0].userImage}",fit: BoxFit.fill,),
+                                            child:Image.network("${getprofile?.data?[0].userImage}",fit: BoxFit.fill,),
                                           ),
                                         ),
                                         /*Positioned(
@@ -374,9 +374,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                               SizedBox(width: 40,),
                               InkWell(
                                 onTap: (){
-                                  Get.to(UserProfile(
-                                    getprofile: getprofile,
-                                  ));
+                                  Get.to(UserProfile(getprofile: getprofile,));
                                 },
                                 child: Container(
                                   width: 34,

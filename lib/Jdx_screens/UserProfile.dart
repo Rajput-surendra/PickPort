@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,8 @@ import 'package:job_dekho_app/Jdx_screens/PickPort/SupportNewScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../Helper/PickModel/get_city_model.dart';
+import '../Helper/PickModel/get_status_model.dart';
 import '../Helper/session.dart';
 import '../Model/getprofilemodel.dart';
 import '../Model/updateprofilemodel.dart';
@@ -75,7 +78,7 @@ class _UserProfileState extends State<UserProfile> {
         update = userprofile;
       });
 
-      Get.to(DrawerScreen());
+      Get.to(const DrawerScreen());
       // Fluttertoast.showToast(msg: '${jsonResponse['message']}');
     } else {
       Fluttertoast.showToast(msg: '${update?.message ?? ''}');
@@ -113,17 +116,12 @@ class _UserProfileState extends State<UserProfile> {
         text: widget.getprofile?.data?[0].userFullname.toString());
     mobileController = TextEditingController(
         text: widget.getprofile?.data?[0].userPhone.toString());
-
+    print('____mobileController______${mobileController}_________');
+        getStateApi();
   }
-
   final ImagePicker _picker = ImagePicker();
   File? imageFile;
   var profileImage;
-
-
-
-
-
   _getFromGallery() async {
     final XFile? pickedFile =
     await _picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
@@ -155,11 +153,11 @@ class _UserProfileState extends State<UserProfile> {
           //the return value will be from "Yes" or "No" options
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(
+            title: const Text(
               'Exit App',
               style: TextStyle(fontFamily: 'Lora'),
             ),
-            content: Text(
+            content: const Text(
               'Do you want to exit an App?',
               style: TextStyle(fontFamily: 'Lora'),
             ),
@@ -167,7 +165,7 @@ class _UserProfileState extends State<UserProfile> {
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(false),
                 //return false when click on "NO"
-                child: Text(
+                child: const Text(
                   'No',
                   style: TextStyle(fontFamily: 'Lora'),
                 ),
@@ -179,7 +177,7 @@ class _UserProfileState extends State<UserProfile> {
                   // Navigator.pop(context,true);
                 },
                 //return true when click on "Yes"
-                child: Text(
+                child: const Text(
                   'Yes',
                   style: TextStyle(fontFamily: 'Lora'),
                 ),
@@ -199,7 +197,7 @@ class _UserProfileState extends State<UserProfile> {
 
             body:  Column(
               children: [
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Expanded(
                   flex: 2,
                   child: Padding(
@@ -218,7 +216,7 @@ class _UserProfileState extends State<UserProfile> {
                                 color: whiteColor,
                                 borderRadius: BorderRadius.circular(100)
                             ),
-                            child: Center(child: Icon(Icons.arrow_back)),
+                            child: const Center(child: Icon(Icons.arrow_back)),
                           ),
                         ),
                         Text(getTranslated(context, "My Profile"),style: TextStyle(color: whiteColor),),
@@ -252,7 +250,7 @@ class _UserProfileState extends State<UserProfile> {
                   child: Container(
                       decoration: BoxDecoration(
                           color: backGround,
-                          borderRadius: BorderRadius.only(topRight: Radius.circular(50))
+                          borderRadius: const BorderRadius.only(topRight: Radius.circular(50))
                       ),
                       child:
                       SingleChildScrollView(
@@ -269,7 +267,7 @@ class _UserProfileState extends State<UserProfile> {
                                       builder: (context) {
                                         return Container(
                                           height: 250,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                               borderRadius: BorderRadius.only(
                                                   topRight: Radius.circular(10),
                                                   topLeft: Radius.circular(10))),
@@ -278,7 +276,7 @@ class _UserProfileState extends State<UserProfile> {
                                             MainAxisAlignment.spaceEvenly,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text("Take Image From",
+                                              const Text("Take Image From",
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 15)),
@@ -287,7 +285,7 @@ class _UserProfileState extends State<UserProfile> {
                                                   'assets/ProfileAssets/cameraicon.png',
                                                   scale: 1.5,
                                                 ),
-                                                title: Text('Camera',
+                                                title: const Text('Camera',
                                                     style: TextStyle(
                                                         fontWeight: FontWeight.bold)),
                                                 onTap: () {
@@ -379,127 +377,312 @@ class _UserProfileState extends State<UserProfile> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Material(
-                                elevation: 10,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 1.2,
-                                  height: 50,
-                                  child: TextField(
-                                    controller: nameController,
-                                    decoration: InputDecoration(
-                                      border: const OutlineInputBorder(
-                                          borderSide: BorderSide.none),
-                                      // hintText: "${getprofile?.data![0].userFullname}",
-                                      prefixIcon: Image.asset(
-                                        'assets/AuthAssets/Icon awesome-user.png',
-                                        scale: 2.1,
-                                        color: primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
                               const SizedBox(
                                 height: 20,
                               ),
-                              Material(
-                                elevation: 10,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 1.2,
-                                  height: 50,
-                                  child: TextField(
-                                    controller: emailController,
-                                    decoration: InputDecoration(
-                                      border: const OutlineInputBorder(
-                                          borderSide: BorderSide.none),
-                                      // hintText: "${getprofile?.data![0].userEmail}",
-                                      prefixIcon: Image.asset(
-                                        'assets/AuthAssets/Icon material-email.png',
-                                        scale: 2.1,
-                                        color: primaryColor,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                children: [
+                                  Card(
+                                    elevation: 1,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Container(
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: CustomColors.TransparentColor),
+                                      child: TextFormField(
+                                        controller: nameController,
+                                        keyboardType: TextInputType.name,
+                                        decoration:  InputDecoration(
+                                          prefixIcon: const Padding(
+                                            padding: EdgeInsets.only(top: 15),
+                                            child: Icon(
+                                              Icons.person,
+                                              color: CustomColors.accentColor,
+                                            ),
+                                          ),
+                                          contentPadding: const EdgeInsets.only(top: 20, left: 5),
+                                          border: InputBorder.none,
+                                          hintText: getTranslated(context, "Name"),
+                                        ),
+
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Material(
-                                elevation: 10,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 1.2,
-                                  height: 50,
-                                  child: TextField(
-                                    keyboardType: TextInputType.number,
-                                    readOnly: true,
-                                    controller: mobileController,
-                                    decoration: InputDecoration(
-                                      border: const OutlineInputBorder(
-                                          borderSide: BorderSide.none),
-                                      hintText: "Mobile No.",
-                                      prefixIcon: Image.asset(
-                                        'assets/AuthAssets/Icon ionic-ios-call.png',
-                                        scale: 2.1,
-                                        color: primaryColor,
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Card(
+                                    elevation: 1,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Container(
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: CustomColors.TransparentColor),
+                                      child: TextFormField(
+                                        maxLength: 10,
+                                        controller: mobileController,
+                                        keyboardType: TextInputType.phone,
+                                        decoration:  InputDecoration(
+                                          counterText: "",
+                                          prefixIcon: const Padding(
+                                            padding: EdgeInsets.only(top: 15),
+                                            child: Icon(
+                                              Icons.call,
+                                              color: CustomColors.accentColor,
+                                            ),
+                                          ),
+                                          contentPadding: const EdgeInsets.only(top: 18, left: 5),
+                                          border: InputBorder.none,
+                                          hintText: getTranslated(context, "ENTER_MOBILE"),
+                                        ),
+
                                       ),
                                     ),
                                   ),
-                                ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      //set border radius more than 50% of height and width to make circle
+                                    ),
+                                    child: Container(
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: CustomColors.TransparentColor),
+                                      child: TextFormField(
+                                        controller: emailController,
+                                        keyboardType: TextInputType.emailAddress,
+                                        decoration:  InputDecoration(
+                                          prefixIcon: const Padding(
+                                            padding: EdgeInsets.only(top: 15),
+                                            child: Icon(
+                                              Icons.email,
+                                              color: CustomColors.accentColor,
+                                            ),
+                                          ),
+                                          contentPadding: const EdgeInsets.only(top: 18, left: 5),
+                                          border: InputBorder.none,
+                                          hintText: getTranslated(context, "Entre_Email"),
+                                        ),
+
+                                      ),
+                                    ),
+                                  ),
+
+                                  Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      //set border radius more than 50% of height and width to make circle
+                                    ),
+                                    elevation: 1,
+                                    child: Container(
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: CustomColors.TransparentColor),
+                                        child: Row(
+                                          children: [
+                                            const Expanded(
+                                                flex: 1,
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(left: 13),
+                                                  child: Icon(Icons.location_city,color: CustomColors.accentColor,),
+                                                )),
+                                            Expanded(
+                                              flex: 10,
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButton2<GetCityList>(
+                                                  isExpanded: true,
+                                                  hint:  Text(getTranslated(context, "State"),
+                                                    style: const TextStyle(
+                                                        color: Colors.black54,fontWeight: FontWeight.w500,fontSize: 18
+
+                                                    ),),
+                                                  value: getCityList,
+
+                                                  // icon:  Icon(Icons.keyboard_arrow_down_rounded,  color:Secondry,size: 25,),
+                                                  style:   TextStyle(color: Secondry,fontWeight: FontWeight.bold),
+                                                  underline: Padding(
+                                                    padding: const EdgeInsets.only(left: 0,top: 4),
+                                                    child: Container(
+
+                                                      // height: 2,
+                                                      color:whiteColor,
+                                                    ),
+                                                  ),
+                                                  onChanged: (GetCityList? value) {
+                                                    setState(() {
+                                                      getCityList = value!;
+                                                      stateId =  getCityList?.stateId;
+                                                      getCityApi(stateId!);
+                                                      //animalCountApi(animalCat!.id);
+                                                    });
+                                                  },
+                                                  items: getStatusModel?.data?.map((items) {
+                                                    return DropdownMenuItem(
+                                                      value: items,
+                                                      child:  Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 2),
+                                                            child: Container(
+
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(top: 0),
+                                                                  child: Text(items.stateName.toString(),overflow:TextOverflow.ellipsis,style: const TextStyle(color:Colors.black),),
+                                                                )),
+                                                          ),
+
+                                                        ],
+                                                      ),
+                                                    );
+                                                  })
+                                                      .toList(),
+                                                ),
+
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8,),
+                                  Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      //set border radius more than 50% of height and width to make circle
+                                    ),
+                                    elevation: 1,
+                                    child: Container(
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: CustomColors.TransparentColor),
+                                        child: Row(
+                                          children: [
+                                            const Expanded(
+                                                flex: 1,
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(left: 13),
+                                                  child: Icon(Icons.location_city,color: CustomColors.accentColor,),
+                                                )),
+                                            Expanded(
+                                              flex: 10,
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButton2<GetStateList>(
+                                                  isExpanded: true,
+                                                  hint:  Text(getTranslated(context, "City"),
+                                                    style:  const TextStyle(
+                                                        color: Colors.black54,fontWeight: FontWeight.w500,fontSize: 18
+                                                    ),),
+                                                  value: getStateList,
+
+                                                  // icon:  Icon(Icons.keyboard_arrow_down_rounded,  color:Secondry,size: 25,),
+                                                  style:   TextStyle(color: Secondry,fontWeight: FontWeight.bold),
+                                                  underline: Padding(
+                                                    padding: const EdgeInsets.only(left: 0,top: 4),
+                                                    child: Container(
+
+                                                      // height: 2,
+                                                      color:whiteColor,
+                                                    ),
+                                                  ),
+                                                  onChanged: (GetStateList? value) {
+                                                    setState(() {
+                                                      getStateList = value!;
+                                                      cityId =  getStateList?.cityId;
+                                                      //animalCountApi(animalCat!.id);
+                                                    });
+                                                  },
+                                                  items: getCityModel?.data?.map((items) {
+                                                    return DropdownMenuItem(
+                                                      value: items,
+                                                      child:  Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(top: 2),
+                                                            child: Container(
+
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(top: 0),
+                                                                  child: Text(items.cityName.toString(),overflow:TextOverflow.ellipsis,style: const TextStyle(color:Colors.black),),
+                                                                )),
+                                                          ),
+
+                                                        ],
+                                                      ),
+                                                    );
+                                                  })
+                                                      .toList(),
+                                                ),
+
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                  ),
+                                ],
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              // Material(
-                              //   elevation: 10,
-                              //   borderRadius: BorderRadius.circular(10),
-                              //   child: Container(
-                              //     width: MediaQuery.of(context).size.width / 1.2,
-                              //     height: 50,
-                              //     child: TextField(
-                              //       controller: passwordController,
-                              //       decoration: InputDecoration(
-                              //         border: const OutlineInputBorder(
-                              //             borderSide: BorderSide.none
-                              //         ),
-                              //         hintText: "password",
-                              //         prefixIcon: Image.asset('assets/AuthAssets/Icon material-email.png', scale: 2.1, color: primaryColor,),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
+                            ),
 
                               const SizedBox(
                                 height: 30,
                               ),
-                              InkWell(
-                                onTap: () {
-                                  UpDateprofile();
 
+                              InkWell(
+                                onTap: (){
+                                  UpDateprofile();
+                                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyStatefulWidget()));
                                 },
                                 child: Container(
-                                  height: 50,
-                                  width: MediaQuery.of(context).size.width / 1.4,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30),
-                                      color: Secondry),
-                                  child: Text(
-                                    "Edit And Save",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
+                                    decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.circular(15)),
+                                    height: 60,
+                                    width: MediaQuery.of(context).size.width,
+                                    child:  Center(
+                                      child: Text(isLoading == true ? getTranslated(context, "Please Wait") :getTranslated(context, "Edit And Save"),
+                                        style: const TextStyle(color: Colors.white),
+                                      ),
+                                    )),
                               ),
+                              // InkWell(
+                              //   onTap: () {
+                              //
+                              //
+                              //   },
+                              //   child: Container(
+                              //     height: 50,
+                              //     width: MediaQuery.of(context).size.width / 1.4,
+                              //     alignment: Alignment.center,
+                              //     decoration: BoxDecoration(
+                              //         borderRadius: BorderRadius.circular(30),
+                              //         color: Secondry),
+                              //     child: Text(getTranslated(context, "Edit And Save"),
+                              //       style: TextStyle(
+                              //         color: Colors.black,
+                              //         fontWeight: FontWeight.bold,
+                              //         fontSize: 14,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           ))
 
@@ -512,5 +695,71 @@ class _UserProfileState extends State<UserProfile> {
 
 
         ));
+  }
+bool isLoading =  false;
+  String? stateId;
+  GetCityList? getCityList;
+  GetStatusModel? getStatusModel;
+  getStateApi() async {
+    var headers = {
+      'Cookie': 'ci_session=72caa85cedaa1a0d8ccc629445189f73af6a9946'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/api_get_state'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      var result = await response.stream.bytesToString();
+      var finalResult =  GetStatusModel.fromJson(json.decode(result));
+      setState(() {
+        getStatusModel =  finalResult;
+      });
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+
+  }
+
+
+
+  String? cityId;
+  GetStateList? getStateList;
+  GetCityModel? getCityModel;
+  getCityApi( String stateId) async {
+    setState(() {
+      isLoading = true;
+    });
+    var headers = {
+      'Cookie': 'ci_session=c59791396657a1155df9f32cc7d7b547a40d648c'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/api_get_city'));
+    request.fields.addAll({
+      'state_id':stateId.toString()
+    });
+
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var result = await response.stream.bytesToString();
+      var finalResult =  GetCityModel.fromJson(json.decode(result));
+      setState(() {
+        getCityModel = finalResult;
+      });
+      setState(() {
+        // Fluttertoast.showToast(msg: "${finalResult['message']}");
+      });
+    }
+    else {
+      setState(() {
+        setState(() {
+          isLoading = false;
+        });
+      });
+      print(response.reasonPhrase);
+    }
+
   }
 }

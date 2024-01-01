@@ -433,38 +433,48 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             Expanded(
-                              child: Card(
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 5,),
-                                    Container(
-                                      height: 80,width: 100,
-                                      child: Image.asset(
-                                        'assets/ProfileAssets/3 wheeler.png',height: 50,width: 50,
+                              child: InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistParcelScreen()));
+                                },
+                                child: Card(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 5,),
+                                      Container(
+                                        height: 80,width: 100,
+                                        child: Image.asset(
+                                          'assets/ProfileAssets/3 wheeler.png',height: 50,width: 50,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 5,),
-                                    Text(getTranslated(context, "3 Wheeler")),
-                                    SizedBox(height: 10,),
-                                  ],
+                                      SizedBox(height: 5,),
+                                      Text(getTranslated(context, "3 Wheeler")),
+                                      SizedBox(height: 10,),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                             Expanded(
-                              child: Card(
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 5,),
-                                    Container(
-                                      height: 80,width: 100,
-                                      child: Image.asset(
-                                        'assets/ProfileAssets/tata ace.png',height: 50,width: 50,
+                              child: InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistParcelScreen()));
+                                },
+                                child: Card(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 5,),
+                                      Container(
+                                        height: 80,width: 100,
+                                        child: Image.asset(
+                                          'assets/ProfileAssets/tata ace.png',height: 50,width: 50,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 5,),
-                                    Text(getTranslated(context, "Tata Ace")),
-                                    SizedBox(height: 10,),
-                                  ],
+                                      SizedBox(height: 5,),
+                                      Text(getTranslated(context, "Tata Ace")),
+                                      SizedBox(height: 10,),
+                                    ],
+                                  ),
                                 ),
                               ),
                             )
@@ -475,38 +485,48 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              child: Card(
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 5,),
-                                    Container(
-                                      height: 90,width: 100,
-                                      child: Image.asset(
-                                        'assets/ProfileAssets/mahindra pickup.png',height: 50,width: 50,
+                              child: InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistParcelScreen()));
+                                },
+                                child: Card(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 5,),
+                                      Container(
+                                        height: 90,width: 100,
+                                        child: Image.asset(
+                                          'assets/ProfileAssets/mahindra pickup.png',height: 50,width: 50,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 5,),
-                                    Text(getTranslated(context, "Mahindra Pickup")),
-                                    SizedBox(height: 10,),
-                                  ],
+                                      SizedBox(height: 5,),
+                                      Text(getTranslated(context, "Mahindra Pickup")),
+                                      SizedBox(height: 10,),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                             Expanded(
-                              child: Card(
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 5,),
-                                    Container(
-                                      height: 90,width: 100,
-                                      child: Image.asset(
-                                        'assets/ProfileAssets/total 407.png',height: 50,width: 50,
+                              child: InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistParcelScreen()));
+                                },
+                                child: Card(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 5,),
+                                      Container(
+                                        height: 90,width: 100,
+                                        child: Image.asset(
+                                          'assets/ProfileAssets/total 407.png',height: 50,width: 50,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 5,),
-                                    Text(getTranslated(context, "Tato 407")),
-                                    SizedBox(height: 10,),
-                                  ],
+                                      SizedBox(height: 5,),
+                                      Text(getTranslated(context, "Tato 407")),
+                                      SizedBox(height: 10,),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -757,21 +777,26 @@ String orderStatus(String status ){
                     ),
                   ),
                   Expanded(
-                    child: Card(
-                      elevation: 2,
-                      child: Column(
-                        children: [
-                          SizedBox(height: 5,),
-                          Container(
-                            height: 90,width: 80,
-                            child: Image.asset(
-                              'assets/ProfileAssets/non gear.png',height: 50,width: 50,
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistParcelScreen()));
+                      },
+                      child: Card(
+                        elevation: 2,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 5,),
+                            Container(
+                              height: 90,width: 80,
+                              child: Image.asset(
+                                'assets/ProfileAssets/non gear.png',height: 50,width: 50,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 5,),
-                          Text(getTranslated(context, "Non Gear Vehicle")),
-                          SizedBox(height: 10,),
-                        ],
+                            SizedBox(height: 5,),
+                            Text(getTranslated(context, "Non Gear Vehicle")),
+                            SizedBox(height: 10,),
+                          ],
+                        ),
                       ),
                     ),
                   ),

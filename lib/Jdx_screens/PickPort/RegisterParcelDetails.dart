@@ -170,9 +170,10 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
       setState(() {
         isLoading = false;
         parcelDetailsModel = jsonResponse;
+        print('____Som___hai___${parcelDetailsModel?.cap?.length}_________');
         // Navigator.push(context,
         //     MaterialPageRoute(builder: (context) => ParceldetailsScreen(orderid: orderid, isFromParcelHistory: false,)));
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>SelcetVhicle(dropLocation: widget.dropLocation,picLocation: widget.picLocation,senderName: userName,senderMobile: userMobile,
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>SelcetVhicle(VichleList: parcelDetailsModel,dropLocation: widget.dropLocation,picLocation: widget.picLocation,senderName: userName,senderMobile: userMobile,
           receiverName: recipientNameController.text,receiverMobile: recipientMobileController.text
         )));
       });
@@ -271,8 +272,8 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
     String formattedDateTime = "${now.year}-${now.month}-${now.day} ${now.hour}:${now.minute}:${now.second}";
-    date =  formattedDateTime.substring(0,11);
-    time =  formattedDateTime.substring(11,16);
+    // date =  formattedDateTime.substring(0,11);
+    // time =  formattedDateTime.substring(11,18);
     print('____Som______${date}____${time}_____');
     // Data data = materialCategoryModel!.data![0].title;
     return Scaffold(
@@ -565,12 +566,12 @@ class _RegisterParcelDetailsState extends State<RegisterParcelDetails> {
                                           .width / 1.1,
                                       height: 60,
                                       child: TextFormField(
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'House/ Apartment';
-                                          }
-                                          return null;
-                                        },
+                                        // validator: (value) {
+                                        //   if (value == null || value.isEmpty) {
+                                        //     return 'House/ Apartment';
+                                        //   }
+                                        //   return null;
+                                        // },
                                         controller: homeController,
                                         decoration: const InputDecoration(
                                           border: OutlineInputBorder(

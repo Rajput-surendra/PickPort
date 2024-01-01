@@ -5,30 +5,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dash/flutter_dash.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:job_dekho_app/Jdx_screens/Dashbord.dart';
-import 'package:job_dekho_app/Jdx_screens/Editrecipentcart.dart';
+
 import 'package:job_dekho_app/Jdx_screens/PickPort/review_booking.dart';
-import 'package:job_dekho_app/Jdx_screens/parceldetailsscreen.dart';
-//import 'package:place_picker/entities/location_result.dart';
-//import 'package:place_picker/widgets/place_picker.dart';
+
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:job_dekho_app/Model/registerparcelmodel.dart';
 import '../../Helper/session.dart';
-import '../../Model/MaterialCategoryModel.dart';
-import '../../Model/ParcelWeightModel.dart';
-import '../../Model/registerparcelmodel.dart';
+
+import '../../Model/get_vehicle_model.dart';
 import '../../Utils/api_path.dart';
 import '../../Utils/color.dart';
 import '../notification_Screen.dart';
 
 class SelcetVhicle extends StatefulWidget {
-  SelcetVhicle({Key? key,this.dropLocation,this.picLocation,this.senderName,this.senderMobile,this.receiverName,this.receiverMobile}) : super(key: key);
+  SelcetVhicle({Key? key,this.dropLocation,this.picLocation,this.senderName,this.senderMobile,this.receiverName,this.receiverMobile,this.VichleList}) : super(key: key);
    String ? dropLocation,picLocation,senderName,senderMobile,receiverName,receiverMobile;
+  Registerparcelmodel ? VichleList;
   @override
   State<SelcetVhicle> createState() => _SelcetVhicleState();
 }
@@ -43,6 +35,10 @@ class _SelcetVhicleState extends State<SelcetVhicle> {
 
 
   }
+
+
+
+
 
   final _formKey = GlobalKey<FormState>();
   int selectedIndex = -1;
@@ -221,7 +217,7 @@ class _SelcetVhicleState extends State<SelcetVhicle> {
                                     child: ListView.builder(
                                       shrinkWrap: true,
                                       physics: NeverScrollableScrollPhysics(),
-                                      itemCount: 5,
+                                      itemCount: widget.VichleList?.cap?.length ?? 0,
                                       itemBuilder: (context, index) {
                                         return InkWell(
                                           onTap: () {
@@ -242,9 +238,50 @@ class _SelcetVhicleState extends State<SelcetVhicle> {
                                                     borderRadius: BorderRadius.circular(10),
                                                     border: selectedIndex == index ? Border.all(color: primaryColor):null
                                                 ),
-                                                child: ListTile(
-                                                  title: Text('Item $index'),
-                                                ),
+                                                child:Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Card(
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(50)
+                                                        ),
+                                                        elevation: 2,
+                                                        child: Container(
+                                                            height: 70,
+                                                            width: 70,
+                                                            child: Image.network("${widget.VichleList?.cap?[index].image}")),
+                                                      ),
+                                                     SizedBox(width: 5,),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 15,left: 10),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text("${widget.VichleList?.cap?[index].name}",style: const TextStyle(
+                                                                fontWeight: FontWeight.bold
+                                                            ),),
+                                                           Row(
+                                                             children: [
+                                                               Text("${widget.VichleList?.cap?[index].maxWeight}KG."),
+                                                               SizedBox(width: 2,),
+                                                               Text("${widget.VichleList?.cap?[index].maxAmount}KM."),
+                                                               SizedBox(width: 2,),
+                                                               Text("₹${widget.VichleList?.cap?[index].feeCharge}",style: TextStyle(
+                                                                   color: backColor,fontWeight: FontWeight.w500
+                                                               ),)
+                                                             ],
+                                                           )
+                                                          ],
+                                                        ),
+                                                      ),
+
+
+
+                                                    ],
+                                                  ),
+                                                )
                                               ),
                                             ),
                                           ),
@@ -256,7 +293,13 @@ class _SelcetVhicleState extends State<SelcetVhicle> {
                                     padding: const EdgeInsets.only(left: 10,right: 10),
                                     child: InkWell(
                                         onTap: () {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewBookingScreen(dropLocation: widget.dropLocation,picLocation: widget.picLocation,)));
+                                          // selectedIndex =
+                                         String feeId= "${widget.VichleList?.cap?[selectedIndex].feeId}";
+                                         String sellerId="${widget.VichleList?.saleId}";
+                                         String orderId="${widget.VichleList?.orderId}";
+
+                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewBookingScreen(dropLocation: widget.dropLocation,picLocation: widget.picLocation,
+                                          sId: sellerId,fId: feeId,oID: orderId,)));
 
                                         },
                                         child: Container(
@@ -317,4 +360,5 @@ String? amt;
       print(response.reasonPhrase);
     }
   }
+
 }

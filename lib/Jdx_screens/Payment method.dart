@@ -20,9 +20,10 @@ import 'PickPort/booking_Confirm.dart';
 import 'notification_Screen.dart';
 
 class PaymentMethod1 extends StatefulWidget {
-  final orderid;
-  final totalAmount;
-  const PaymentMethod1({Key? key, this.orderid, this.totalAmount}) : super(key: key);
+  String? orderid,cAmount;
+  double? totalAmount,amount;
+  bool? isCheck;
+   PaymentMethod1({Key? key, this.orderid, this.totalAmount,this.isCheck,this.amount,this.cAmount}) : super(key: key);
 
   @override
   State<PaymentMethod1> createState() => _PaymentMethod1State();
@@ -45,8 +46,9 @@ class _PaymentMethod1State extends State<PaymentMethod1> {
     request.fields.addAll({
       'paymenttype': type,
       'user_id': userid.toString(),
-      'order_id': widget.orderid,
-      'subtotal': widget.totalAmount.toString(),
+      'order_id':widget.orderid.toString(),
+      'subtotal': widget.isCheck == true ? widget.amount.toString(): widget.totalAmount.toString(),
+      'coupan_amount':widget.cAmount == null ? "0.0":widget.cAmount.toString()
     });
     print("Param ${request.fields}");
     request.headers.addAll(headers);
@@ -168,22 +170,24 @@ class _PaymentMethod1State extends State<PaymentMethod1> {
                               child: InkWell(
 
                                   onTap: (){
-                                    print('___________${paymentTypeList[i].type}__________');
+                                    print('_____Wallet______${paymentTypeList[i].type}__________');
                                     final value = double.parse(walletHistoryModel?.wallet ?? '0.0') ;
 
                                     if(paymentTypeList[i].type.toString() == "Wallet") {
-                                      if (value >= widget.totalAmount) {
+                                      if (value >= widget.totalAmount!.toDouble()) {
                                         paymentType(paymentTypeList[i].type ??'');
 
                                       }else {
                                         Fluttertoast.showToast(msg: " you have not enough balance in your wallet for the order");
                                       }
                                     }else if(paymentTypeList[i].type.toString() == "Cash On Payment"){
-
+                                      print('__________Cash On Payment_________');
                                       paymentType(paymentTypeList[i].type ??'');
 
                                     }else{
                                       openCheckout();
+                                      print('__________online_________');
+
                                       Fluttertoast.showToast(msg: paymentTypeList[i].type ?? 'online');
                                     }
 
@@ -347,7 +351,7 @@ class _PaymentMethod1State extends State<PaymentMethod1> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? email = prefs.getString('email');
     String? phone = prefs.getString('phone');
-    int amt = widget.totalAmount.toInt() ;
+    int amt = widget.totalAmount!.toInt() ;
 
 
 print('${email}_______________');
@@ -358,8 +362,8 @@ print('${amt}_______________');
       var options = {
         'key': 'rzp_test_1DP5mmOlF5G5ag',
         'amount': amt*100,
-        'name': 'jdx-user',
-        'description': 'jdx-user',
+        'name': 'pick Port',
+        'description': 'pick Port',
       "currency": "INR",
         'prefill': {'contact': '$phone', 'email': '$email'},
         'external': {
@@ -392,7 +396,7 @@ print('${amt}_______________');
         textColor: Colors.white,
         fontSize: 16.0);
     // Navigator.push(context, MaterialPageRoute(builder: (context)=>DashBoardScreen()));
-    paymentType('Online Payment');
+        paymentType('Online Payment');
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
